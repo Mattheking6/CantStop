@@ -1,0 +1,21 @@
+<RCC>
+  <qresource prefix="interface">
+    <file>De.png</file>
+    <file>PionBlanc.png</file>
+    <file>PionBleu.png</file>
+    <file>PionGris.png</file>
+    <file>PionJaune.png</file>
+    <file>PionNoir.png</file>
+    <file>PionOrange.png</file>
+    <file>PionRouge.png</file>
+    <file>PionVert.png</file>
+    <file>PionViolet.png</file>
+    <file>De1.png</file>
+    <file>De2.png</file>
+    <file>De3.png</file>
+    <file>De4.png</file>
+    <file>De5.png</file>
+    <file>De6.png</file>
+    <file>montagne-sigmar.jpg</file>
+  </qresource>
+</RCC>
