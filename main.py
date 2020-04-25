@@ -15,13 +15,20 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
         # Afficher le menu contextuel windows
         self.icone_windows()
 
+        # desactiver bouton
+        self.Continue.setEnabled(False)
+        self.Stop.setEnabled(False)
+
         # On lance un nouveau jeu
         partie = Partie()
 
         # Les actions des boutons du jeu
         self.Continue.clicked.connect(self.nouveau_lance)
         self.Stop.clicked.connect(lambda: self.nouveau_tour(partie))
-        #self.actionQuitter.triggered(self.close)
+        self.Choix_1.clicked.connect(self.activer_choix)
+        self.Choix_2.clicked.connect(self.activer_choix)
+        self.Choix_3.clicked.connect(self.activer_choix)
+        # self.actionQuitter.triggered(self.close)
 
         self.execution(partie)
 
@@ -47,19 +54,30 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
         self.nouveau_lance()
 
     def nouveau_lance(self):
+        # On desactive les boutons
+        self.desactiver_choix()
+        # On lance les dés
         des, possibilite = lancer_de()
-        print(des)
         # Affichier les dés
         self.DeA.setPixmap(QPixmap(":/interface/De{}.png".format(des[0])))
         self.DeB.setPixmap(QPixmap(":/interface/De{}.png".format(des[1])))
         self.DeC.setPixmap(QPixmap(":/interface/De{}.png".format(des[2])))
         self.DeD.setPixmap(QPixmap(":/interface/De{}.png".format(des[3])))
-        print(possibilite)
+        # Afficher les possibilites
         self.Choix_1.setText(str(possibilite[1]))
         self.Choix_2.setText(str(possibilite[2]))
         self.Choix_3.setText(str(possibilite[3]))
 
+    def desactiver_choix(self):
+        self.Continue.setEnabled(False)
+        self.Stop.setEnabled(False)
+        self.Choix_1.setChecked(False)
+        self.Choix_2.setChecked(False)
+        self.Choix_3.setChecked(False)
 
+    def activer_choix(self):
+        self.Continue.setEnabled(True)
+        self.Stop.setEnabled(True)
 
 class Partie:
     def __init__(self):
