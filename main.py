@@ -1,5 +1,4 @@
 from PyQt5.QtGui import *
-from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 import sys
 import time
@@ -18,6 +17,20 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
 
         self.actionQuitter.triggered.connect(self.close)
 
+        self.desactiver_bouton()
+
+        # Nouvelles parties
+        self.action2_joueurs.triggered.connect(lambda: self.nouvelle_partie(2))
+        self.action3_joueurs.triggered.connect(lambda: self.nouvelle_partie(3))
+        self.action4_joueurs.triggered.connect(lambda: self.nouvelle_partie(4))
+
+        # necessaire pour manager le plateau
+        self.choix = {}  # cle = numero de choix 3 tuples possible , cle 0 = choix definitif
+
+        # les objets hors interface
+        self.partie = None
+
+    def desactiver_bouton(self):
         # desactiver bouton
         self.Continue.setEnabled(False)
         self.Stop.setEnabled(False)
@@ -25,18 +38,10 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
         self.Choix_2.setVisible(False)
         self.Choix_3.setVisible(False)
 
-        self.action2_joueurs.triggered.connect(lambda: self.nouvelle_partie(2))
-        self.action3_joueurs.triggered.connect(lambda: self.nouvelle_partie(3))
-        self.action4_joueurs.triggered.connect(lambda: self.nouvelle_partie(4))
-
-        # necessaire pour manager le plateau
-        self.listePions = {}
-        self.choix = {}  # cle = numero de choix 3 tuples possible , cle 0 = choix definitif
-
-    def initier_boutons(self, partie):
+    def initier_boutons(self):
         # Les actions des boutons du jeu
-        self.Continue.clicked.connect(lambda: self.continuer(partie))
-        self.Stop.clicked.connect(lambda: self.stopper(partie))
+        self.Continue.clicked.connect(self.continuer)
+        self.Stop.clicked.connect(self.stopper)
         self.Choix_1.clicked.connect(lambda: self.activer_choix(1))
         self.Choix_2.clicked.connect(lambda: self.activer_choix(2))
         self.Choix_3.clicked.connect(lambda: self.activer_choix(3))
@@ -52,34 +57,36 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
         systray.show()
         close.triggered.connect(qApp.quit)
 
-    def execution(self, partie):
-        self.nouveau_tour(partie)
-
     def nouvelle_partie(self, nb_joueurs):
+        # repositionner les pions
+        pions.nouvelle_partie()
         # On lance un nouveau jeu
-        partie = Partie(nb_joueurs)
+        self.partie = Partie(nb_joueurs)
         self.Choix_1.setVisible(True)
         self.Choix_2.setVisible(True)
         self.Choix_3.setVisible(True)
-        self.nouveau_tour(partie)
-        self.initier_boutons(partie)
+        self.nouveau_tour()
+        self.initier_boutons()
 
-    def continuer(self, partie):
+    def continuer(self):
         print("continuer")
+        valeur1, valeur2 = self.choix[0]
+        # todo verifier qu'on peut mettre les pions
+        self.partie.bouger_n(valeur1, valeur2)
         self.nouveau_lance()
 
-    def stopper(self, partie):
+    def stopper(self):
         print("stopper")
         valeur1, valeur2 = self.choix[0]
         # todo verifier qu'on peut mettre les pions
-        partie.ajouter_pion(valeur1)
-        partie.ajouter_pion(valeur2)
-        self.nouveau_tour(partie)
+        self.partie.ajouter_pion_c(valeur1)
+        self.partie.ajouter_pion_c(valeur2)
+        self.nouveau_tour()
 
-    def nouveau_tour(self, partie):
+    def nouveau_tour(self):
         # Afficher la couleur du joueur
-        partie.tour_suivant()
-        self.JoueurCourant.setPixmap(u.image_pion(partie._joueurs[partie.j_actuel]))
+        self.partie.tour_suivant()
+        self.JoueurCourant.setPixmap(u.image_pion(self.partie.joueurs[self.partie.j_actuel]))
         self.nouveau_lance()
 
     def nouveau_lance(self):
@@ -115,15 +122,19 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
     # def ajouter_pion(self, joueur, couleur, colonne):
     #
     #     self.listePions[joueur] = Pion(joueur, couleur, colonne)
+    def init_application(self):
+        # remettre les boutons a 0
+        self.desactiver_bouton()
 
 
 class Partie:
     def __init__(self, nombre_joueurs):
         print(f"==> Nouvelle partie de {nombre_joueurs} joueurs")
         self._nombre_joueurs = nombre_joueurs
-        self._joueurs = u.creer_joueurs(nombre_joueurs)
+        self.joueurs = u.creer_joueurs(nombre_joueurs)
         self.j_actuel = 0
         self.liste_pions = {}  # key : (joueur, colonne), valeur : Pion instance
+        self.dic_noir = {1: (0, 0), 2: (0, 0), 3: (0, 0)}
 
     def tour_suivant(self):
         if self.j_actuel == self._nombre_joueurs:
@@ -134,58 +145,56 @@ class Partie:
         return self.j_actuel
 
     def couleur_actuelle(self):
-        couleur = self._joueurs[self.j_actuel]
+        couleur = self.joueurs[self.j_actuel]
         return couleur
 
-    def ajouter_pion(self, colonne):
-        self.liste_pions[(self.j_actuel, colonne)] = Pion(self.j_actuel, self.couleur_actuelle(), colonne)
+    def bouger_n(self, *colonnes):
+        for colonne in colonnes:
+            numero, emplacement = u.pion_noir_present(self.dic_noir, colonne)
+            emplacement += 1
+            if numero is None:
+                numero = u.pion_noir_dispo(self.dic_noir)
+                if numero is None:
+                    print("Il n'y a plus de point noir dispo")
+                else:
+                    u.pion_bouger(pions.liste_pions[self.j_actuel, colonne], pions.liste_pions_noirs[numero], colonne, 1)
+            else:
+                u.pion_bouger(pions.liste_pions[self.j_actuel, colonne], pions.liste_pions_noirs[numero], colonne, emplacement)
+
+    def ajouter_pion_c(self, colonne):
+        u.pion_ajouter(pions.liste_pions[self.j_actuel, colonne], self.j_actuel, colonne, self.couleur_actuelle())
+
 
 
 class Joueur:
     def __init__(self, numero, couleur):
         self.couleur = couleur
+        self.numero = numero
         self.termine = 0
         self.position = {x: 0 for x in range(2, 13)}
 
 
-class Pion:
-    _num = 0
+class Pions:
 
-    @staticmethod
-    def _numero_suivant():
-        Pion._num += 1
-        resultat = Pion._num
-        return resultat
+    def __init__(self):
+        # creer les pions noirs
+        self.liste_pions_noirs = [u.pion_noir_initier(jeu.centralwidget, _) for _ in range(1, 4)]
 
-    def __init__(self, joueur, couleur, colonne):
-        self._numero = Pion._numero_suivant()
-        self._joueur = joueur
-        self._couleur = couleur
-        self._colonne = colonne
-        self.position = 1
+        # creer un pion par joueur et par colonne
+        self.liste_pions = {(joueur, colonne): u.pion_initier(jeu.centralwidget, joueur, colonne)
+                            for joueur in range(1, 4)
+                            for colonne in range(2, 13)}
 
-        x, y = u.positionnement(self._joueur, self._colonne, self.position)
-
-        # partie graphique du pion
-        self._pion = QLabel(jeu.centralwidget)
-        self._pion.setGeometry(QRect(x, y, 41, 41))
-        self._pion.setText("")
-        self._pion.setPixmap(u.image_pion(self._couleur))
-        self._pion.setScaledContents(True)
-        self._pion.setObjectName(f"{self._numero}-{self._couleur}")
-        self._pion.show()
-
-    def bouger(self, position):
-        # enlever l'affichage précédent
-        # TODO
-        # Mettre le nouvel affichage
-        self.position = position
-        self._pion.setGeometry(QRect(120, 450, 41, 41))
+    def nouvelle_partie(self):
+        # TODO fix
+        # u.raz(self.liste_pions, self.liste_pions_noirs)
+        pass
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     jeu = Jeu()
+    pions = Pions()
 
     splash_image = u.image_de("")
     splash = QSplashScreen()
