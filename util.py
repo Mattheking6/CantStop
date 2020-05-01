@@ -20,13 +20,13 @@ def lancer_de():
     """
     Effectue un lance de dés et expose le résultat
     :return: lancer_des : liste des 4 dés
-             possibilite : dictionnaire avec les 3 possibilités
+             possibilite : liste des 3 possibilités
     """
     lancer_des = [rand.randrange(1, 7) for _ in range(4)]
-    possibilite = {1: (lancer_des[0] + lancer_des[1], lancer_des[2] + lancer_des[3]),
-                   2: (lancer_des[0] + lancer_des[2], lancer_des[1] + lancer_des[3]),
-                   3: (lancer_des[0] + lancer_des[3], lancer_des[2] + lancer_des[1])
-                   }
+    possibilite = [(lancer_des[0] + lancer_des[1], lancer_des[2] + lancer_des[3]),
+                   (lancer_des[0] + lancer_des[2], lancer_des[1] + lancer_des[3]),
+                   (lancer_des[0] + lancer_des[3], lancer_des[2] + lancer_des[1])
+                   ]
     return lancer_des, possibilite
 
 
@@ -56,15 +56,23 @@ def positionnement(joueur: int, colonne: int, position: int) -> tuple:
     :param position: entier position sur l'échelle
     :return: position x, y de l'image
     """
-    x = 92 + int((colonne - 2) * 595 / 10)
-    y = 582 - int((position - 1) * (535 / 12))
-    # supperposition joueur
-    x += joueur * 4
-    y += joueur * 4
-    return x, y
+    try:
+        x = 92 + int((colonne - 2) * 595 / 10)
+        y = 582 - int((position - 1) * (535 / 12))
+        # supperposition joueur
+        x += joueur * 4
+        y += joueur * 4
+        return x, y
+    except Exception as e:
+        print(f"Problème dans le passe des paramètres :"
+              f"joueur = {joueur}"
+              f"colonne = {colonne}"
+              f"position = {position}"
+              f"{str(e)}")
+        return 1, 1
 
 
-def creer_joueurs(nombre: int, couleurs: list = None) -> object:
+def creer_joueurs(nombre: int, couleurs: list = None) -> dict:
     """
     En début de partie créer les joueurs avec des couleurs aléatoires
     :param nombre: int nombre de joueurs
@@ -73,7 +81,7 @@ def creer_joueurs(nombre: int, couleurs: list = None) -> object:
     """
     table = {}
     if couleurs is None:
-        couleurs = COULEURS
+        couleurs = COULEURS.copy()
     for personne in range(nombre):
         couleur = rand.choice(couleurs)
         table[personne + 1] = couleur
@@ -157,17 +165,21 @@ def raz(liste_couleur: dict, liste_neutre: list):
         pion_neutre_repositionner(pion_n, numero)
 
 
-def pion_neutre_present(dic_neutre: dict, test: int):
-    for numero, emplacement in dic_neutre.items():
-        echelle, position = emplacement
+def pion_neutre_present(list_neutre: list, test: int):
+    count = 0
+    pprint(list_neutre)
+    for echelle, position in list_neutre:
         if echelle == test:
-            return numero, emplacement
+            print(count, position)
+            return count, position
+        count += 1
     return None, 0
 
 
-def pion_neutre_dispo(dic_neutre: dict) -> int:
-    for numero, emplacement in dic_neutre.items():
+def pion_neutre_dispo(list_neutre: list) -> int:
+    numero = 0
+    for emplacement in list_neutre:
         if emplacement == (0, 0):
             return numero
-    return None
+    numero += 1
 
