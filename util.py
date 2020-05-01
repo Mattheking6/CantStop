@@ -181,5 +181,6 @@ def pion_neutre_dispo(list_neutre: list) -> int:
     for emplacement in list_neutre:
         if emplacement == (0, 0):
             return numero
-    numero += 1
+        else:
+            numero += 1
 
