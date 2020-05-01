@@ -1,3 +1,5 @@
+from pprint import pprint
+
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 import sys
@@ -25,7 +27,7 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
         self.action4_joueurs.triggered.connect(lambda: self.nouvelle_partie(4))
 
         # necessaire pour manager le plateau
-        self.choix = {}  # cle = numero de choix 3 tuples possible , cle 0 = choix definitif
+        self.choix = {}  # cle = numero de choix tuples possible , cle 0 = choix definitif
 
         # les objets hors interface
         self.partie = None
@@ -34,17 +36,17 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
         # desactiver bouton
         self.Continue.setEnabled(False)
         self.Stop.setEnabled(False)
-        self.Choix_1.setVisible(False)
-        self.Choix_2.setVisible(False)
-        self.Choix_3.setVisible(False)
+        self.Choix_1_0.setVisible(False)
+        self.Choix_2_0.setVisible(False)
+        self.Choix_3_0.setVisible(False)
 
     def initier_boutons(self):
         # Les actions des boutons du jeu
         self.Continue.clicked.connect(self.continuer)
         self.Stop.clicked.connect(self.stopper)
-        self.Choix_1.clicked.connect(lambda: self.activer_choix(1))
-        self.Choix_2.clicked.connect(lambda: self.activer_choix(2))
-        self.Choix_3.clicked.connect(lambda: self.activer_choix(3))
+        self.Choix_1_0.clicked.connect(lambda: self.activer_choix(1))
+        self.Choix_2_0.clicked.connect(lambda: self.activer_choix(2))
+        self.Choix_3_0.clicked.connect(lambda: self.activer_choix(3))
 
     def icone_windows(self):
         systray_icon = QIcon("ressources\De5.png")
@@ -62,9 +64,9 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
         pions.nouvelle_partie()
         # On lance un nouveau jeu
         self.partie = Partie(nb_joueurs)
-        self.Choix_1.setVisible(True)
-        self.Choix_2.setVisible(True)
-        self.Choix_3.setVisible(True)
+        self.Choix_1_0.setVisible(True)
+        self.Choix_2_0.setVisible(True)
+        self.Choix_3_0.setVisible(True)
         self.nouveau_tour()
         self.initier_boutons()
 
@@ -78,9 +80,11 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
     def stopper(self):
         print("stopper")
         valeur1, valeur2 = self.choix[0]
+        # todo fix : trouver la position des pions
+        position = 1
         # todo verifier qu'on peut mettre les pions
-        self.partie.ajouter_pion_c(valeur1)
-        self.partie.ajouter_pion_c(valeur2)
+        self.partie.ajouter_pion_c(valeur1, position)
+        self.partie.ajouter_pion_c(valeur2, position)
         self.nouveau_tour()
 
     def nouveau_tour(self):
@@ -94,24 +98,19 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
         self.desactiver_choix()
         # On lance les dés
         des, possibilite = u.lancer_de()
-        # Affichier les dés
-        self.DeA.setPixmap(u.image_de(des[0]))
-        self.DeB.setPixmap(u.image_de(des[1]))
-        self.DeC.setPixmap(u.image_de(des[2]))
-        self.DeD.setPixmap(u.image_de(des[3]))
         # Afficher les possibilites
-        self.Choix_1.setText(str(possibilite[1]))
-        self.Choix_2.setText(str(possibilite[2]))
-        self.Choix_3.setText(str(possibilite[3]))
+        self.Choix_1_0.setText(str(possibilite[1]))
+        self.Choix_2_0.setText(str(possibilite[2]))
+        self.Choix_3_0.setText(str(possibilite[3]))
         # Lister les possibilités
         self.choix = possibilite
 
     def desactiver_choix(self):
         self.Continue.setEnabled(False)
         self.Stop.setEnabled(False)
-        self.Choix_1.setChecked(False)
-        self.Choix_2.setChecked(False)
-        self.Choix_3.setChecked(False)
+        self.Choix_1_0.setChecked(False)
+        self.Choix_2_0.setChecked(False)
+        self.Choix_3_0.setChecked(False)
 
     def activer_choix(self, choix):
         self.Continue.setEnabled(True)
@@ -134,7 +133,7 @@ class Partie:
         self.joueurs = u.creer_joueurs(nombre_joueurs)
         self.j_actuel = 0
         self.liste_pions = {}  # key : (joueur, colonne), valeur : Pion instance
-        self.dic_noir = {1: (0, 0), 2: (0, 0), 3: (0, 0)}
+        self.dic_neutre = {1: (0, 0), 2: (0, 0), 3: (0, 0)}
 
     def tour_suivant(self):
         if self.j_actuel == self._nombre_joueurs:
@@ -150,20 +149,20 @@ class Partie:
 
     def bouger_n(self, *colonnes):
         for colonne in colonnes:
-            numero, emplacement = u.pion_noir_present(self.dic_noir, colonne)
+            numero, emplacement = u.pion_neutre_present(self.dic_neutre, colonne)
             emplacement += 1
             if numero is None:
-                numero = u.pion_noir_dispo(self.dic_noir)
+                numero = u.pion_neutre_dispo(self.dic_neutre)
                 if numero is None:
                     print("Il n'y a plus de point noir dispo")
                 else:
-                    u.pion_bouger(pions.liste_pions[self.j_actuel, colonne], pions.liste_pions_noirs[numero], colonne, 1)
+                    u.pion_bouger(pions.liste_pions_neutres[numero], 0, colonne, emplacement)
             else:
-                u.pion_bouger(pions.liste_pions[self.j_actuel, colonne], pions.liste_pions_noirs[numero], colonne, emplacement)
+                u.pion_bouger(pions.liste_pions_neutres[numero], 0, colonne, emplacement)
 
-    def ajouter_pion_c(self, colonne):
-        u.pion_ajouter(pions.liste_pions[self.j_actuel, colonne], self.j_actuel, colonne, self.couleur_actuelle())
-
+    def ajouter_pion_c(self, colonne, position):
+        u.pion_ajouter(pions.liste_pions[self.j_actuel, colonne], self.j_actuel, colonne, position,
+                       self.couleur_actuelle())
 
 
 class Joueur:
@@ -178,7 +177,7 @@ class Pions:
 
     def __init__(self):
         # creer les pions noirs
-        self.liste_pions_noirs = [u.pion_noir_initier(jeu.centralwidget, _) for _ in range(1, 4)]
+        self.liste_pions_neutres = [u.pion_neutre_initier(jeu.centralwidget, _) for _ in range(1, 4)]
 
         # creer un pion par joueur et par colonne
         self.liste_pions = {(joueur, colonne): u.pion_initier(jeu.centralwidget, joueur, colonne)
@@ -186,26 +185,30 @@ class Pions:
                             for colonne in range(2, 13)}
 
     def nouvelle_partie(self):
-        # TODO fix
-        # u.raz(self.liste_pions, self.liste_pions_noirs)
-        pass
+        # cacher les pions
+        u.raz(self.liste_pions, self.liste_pions_neutres)
+        # mettre les scores a 0
 
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    jeu = Jeu()
-    pions = Pions()
+    try:
+        app = QApplication(sys.argv)
+        jeu = Jeu()
+        pions = Pions()
 
-    splash_image = u.image_de("")
-    splash = QSplashScreen()
+        splash_image = u.image_de("")
+        splash = QSplashScreen()
 
-    for x in range(1, 7):
-        splash_image = u.image_de(x)
-        splash = QSplashScreen(splash_image)
-        splash.show()
-        time.sleep(0.1)
+        for x in range(1, 7):
+            splash_image = u.image_de(x)
+            splash = QSplashScreen(splash_image)
+            splash.show()
+            time.sleep(0.1)
 
-    jeu.show()
-    app.exec_()
+        jeu.show()
+        app.exec_()
 
-    splash.finish(jeu)
+        splash.finish(jeu)
+
+    except ValueError as e:
+        str(e)

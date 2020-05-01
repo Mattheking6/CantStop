@@ -11,13 +11,18 @@ COULEURS = ["Bleu", "Blanc", "Gris", "Jaune", "Orange", "Rouge", "Vert", "Violet
 COULEUR_NEUTRE = "Noir"
 ECHELLE = {2: 3, 3: 5, 4: 7, 5: 9, 6: 11, 7: 13,
            12: 3, 11: 5, 10: 7, 9: 9, 8: 11}
-POSITION_NOIR = {1: QRect(50, 190, 41, 41),
+POSITION_neutre = {1: QRect(50, 190, 41, 41),
                  2: QRect(50, 240, 41, 41),
                  3: QRect(50, 290, 41, 41)}
 
 
 def lancer_de():
-    lancer_des = [rand.randrange(1, 7) for x in range(4)]
+    """
+    Effectue un lance de dés et expose le résultat
+    :return: lancer_des : liste des 4 dés
+             possibilite : dictionnaire avec les 3 possibilités
+    """
+    lancer_des = [rand.randrange(1, 7) for _ in range(4)]
     possibilite = {1: (lancer_des[0] + lancer_des[1], lancer_des[2] + lancer_des[3]),
                    2: (lancer_des[0] + lancer_des[2], lancer_des[1] + lancer_des[3]),
                    3: (lancer_des[0] + lancer_des[3], lancer_des[2] + lancer_des[1])
@@ -25,15 +30,32 @@ def lancer_de():
     return lancer_des, possibilite
 
 
-def image_pion(couleur):
+def image_pion(couleur: str):
+    """
+    Trouver l'image du pion
+    :param couleur: valeur parmis COULEURS
+    :return: image du pion
+    """
     return QPixmap(":/interface/Pion{}.png".format(couleur))
 
 
-def image_de(des):
+def image_de(des: int):
+    """
+    Trouver l'image d'un dé, le dé 0 existe
+    :param des: valeur du dé
+    :return: image du dé
+    """
     return QPixmap(":/interface/De{}.png".format(des))
 
 
-def positionnement(joueur, colonne, position):
+def positionnement(joueur: int, colonne: int, position: int) -> tuple:
+    """
+    Positionne sur l'image pixelle le pion
+    :param joueur: entier joueur , 0 correspond aux pions noirs
+    :param colonne: entier colonne
+    :param position: entier position sur l'échelle
+    :return: position x, y de l'image
+    """
     x = 92 + int((colonne - 2) * 595 / 10)
     y = 582 - int((position - 1) * (535 / 12))
     # supperposition joueur
@@ -42,7 +64,13 @@ def positionnement(joueur, colonne, position):
     return x, y
 
 
-def creer_joueurs(nombre, couleurs=None):
+def creer_joueurs(nombre: int, couleurs: list = None) -> object:
+    """
+    En début de partie créer les joueurs avec des couleurs aléatoires
+    :param nombre: int nombre de joueurs
+    :param couleurs: valeur des couleurs possibles par défaut COULEURS
+    :return: {numéro du joueur : couleur}
+    """
     table = {}
     if couleurs is None:
         couleurs = COULEURS
@@ -53,8 +81,14 @@ def creer_joueurs(nombre, couleurs=None):
     return table
 
 
-def pion_initier(central_widget, joueur, colonne):
-    couleur = "Noir"
+def pion_initier(central_widget: QWidget, joueur: int, colonne: int) -> QLabel:
+    """
+    Initie une fois pour toutes tous les labels des pions pour les 4 joueurs
+    :param central_widget: fenêtre principale
+    :param joueur: numéro du joueur
+    :param colonne: echelle
+    :return:
+    """
     position = 1
 
     pos_x, pos_y = positionnement(joueur, colonne, position)
@@ -68,53 +102,71 @@ def pion_initier(central_widget, joueur, colonne):
     return pion
 
 
-def pion_noir_initier(central_widget, numero):
-    pion_noir = QLabel(central_widget)
-    pion_noir_repositionner(pion_noir, numero)
-    pion_noir.setText("")
-    pion_noir.setPixmap(QPixmap(":/interface/PionNoir.png"))
-    pion_noir.setScaledContents(True)
-    pion_noir.setObjectName("Pion_noir_{numero}")
-    pion_noir.show()
-    return pion_noir
+def pion_neutre_initier(central_widget: QWidget, numero: int) -> QLabel:
+    """
+    Initie une fois pour toutes tous les labels des pions noirs
+    :param central_widget: 
+    :param numero: 
+    :return: 
+    """
+    pion_neutre = QLabel(central_widget)
+    pion_neutre_repositionner(pion_neutre, numero)
+    pion_neutre.setText("")
+    pion_neutre.setPixmap(QPixmap(f":/interface/Pion{COULEUR_NEUTRE}.png"))
+    pion_neutre.setScaledContents(True)
+    pion_neutre.setObjectName(f"Pion_neutre_{numero}")
+    pion_neutre.show()
+    return pion_neutre
 
 
-def pion_noir_repositionner(pion_noir, numero):
-    pion_noir.setGeometry(POSITION_NOIR[numero])
+def pion_neutre_repositionner(pion_neutre: QLabel, numero: int):
+    """
+    Déplacer un pion neutre
+    :param pion_neutre: le label du pion
+    :param numero: le numéro du pion
+    """
+    pion_neutre.setGeometry(POSITION_neutre[numero])
 
 
-def pion_ajouter(pion, joueur, colonne, couleur):
-    pos_x, pos_y = positionnement(joueur, colonne, 1)
+def pion_ajouter(pion: QLabel, joueur: int, colonne: int, position: int, couleur: str):
+    """
+    Mettre un 1er pion sur l'échelle
+    :param pion: label du pion
+    :param joueur: numéro du joueur
+    :param colonne: échelle
+    :param position: position sur l'échelle
+    :param couleur: couleur du pion
+    """
+    pos_x, pos_y = positionnement(joueur, colonne, position)
     pion.setPixmap(image_pion(couleur))
     pion.setGeometry(QRect(pos_x, pos_y, 41, 41))
     pion.show()
 
 
-def pion_bouger(pion, joueur, colonne, position):
+def pion_bouger(pion: QLabel, joueur: int, colonne: int, position: int):
     pos_x, pos_y = positionnement(joueur, colonne, position)
     pion.setGeometry(QRect(pos_x, pos_y, 41, 41))
 
 
-def raz(liste_couleur, liste_noir):
-    for pion_c, pion in iter(liste_couleur):
+def raz(liste_couleur: dict, liste_neutre: list):
+    for pion, pion_c in liste_couleur.items():
         pion_c.hide()
     numero = 0
-    for pion_n in liste_noir:
+    for pion_n in liste_neutre:
         numero += 1
-        pion_noir_repositionner(pion_n, numero)
+        pion_neutre_repositionner(pion_n, numero)
 
 
-def pion_noir_present(dic_noir, test):
-    pprint(dic_noir)
-    for numero, emplacement in dic_noir:
+def pion_neutre_present(dic_neutre: dict, test: int):
+    for numero, emplacement in dic_neutre.items():
         echelle, position = emplacement
         if echelle == test:
             return numero, emplacement
-    return None, None
+    return None, 0
 
 
-def pion_noir_dispo(dic_noir):
-    for numero, emplacement in dic_noir:
+def pion_neutre_dispo(dic_neutre: dict) -> int:
+    for numero, emplacement in dic_neutre.items():
         if emplacement == (0, 0):
             return numero
     return None
