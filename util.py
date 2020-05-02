@@ -158,6 +158,13 @@ def pion_ajouter(pion: QLabel, joueur: int, colonne: int, position: int, couleur
 
 
 def pion_bouger(pion: QLabel, joueur: int, colonne: int, position: int):
+    """
+    Bouger un pion graphiquement
+    :param pion: l'image
+    :param joueur: le numéro du joueur : 0 pour un neutre
+    :param colonne: l'échelle
+    :param position: la hauteur dans l'échelle
+    """
     pos_x, pos_y = positionnement(joueur, colonne, position)
     pion.setGeometry(QRect(pos_x, pos_y, 41, 41))
 
@@ -177,10 +184,8 @@ def ranger_neutre(liste_neutre: list):
 
 def pion_neutre_present(list_neutre: list, test: int):
     count = 0
-    pprint(list_neutre)
     for echelle, position in list_neutre:
         if echelle == test:
-            print(count, position)
             return count, position
         count += 1
     return None, 0
