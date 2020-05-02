@@ -11,9 +11,9 @@ COULEURS = ["Bleu", "Blanc", "Gris", "Jaune", "Orange", "Rouge", "Vert", "Violet
 COULEUR_NEUTRE = "Noir"
 ECHELLE = {2: 3, 3: 5, 4: 7, 5: 9, 6: 11, 7: 13,
            12: 3, 11: 5, 10: 7, 9: 9, 8: 11}
-POSITION_neutre = {1: QRect(50, 190, 41, 41),
-                 2: QRect(50, 240, 41, 41),
-                 3: QRect(50, 290, 41, 41)}
+POSITION_neutre = [QRect(50, 190, 41, 41),
+                   QRect(50, 240, 41, 41),
+                   QRect(50, 290, 41, 41)]
 
 
 def lancer_de(DeA: QLabel, DeB: QLabel, DeC: QLabel, DeD: QLabel,):
@@ -139,6 +139,7 @@ def pion_neutre_repositionner(pion_neutre: QLabel, numero: int):
     :param pion_neutre: le label du pion
     :param numero: le numéro du pion
     """
+    print(f"Repositionnement du pion neutre {numero}")
     pion_neutre.setGeometry(POSITION_neutre[numero])
 
 
@@ -178,8 +179,9 @@ def raz(liste_couleur: dict, liste_neutre: list):
 def ranger_neutre(liste_neutre: list):
     numero = 0
     for pion_n in liste_neutre:
-        numero += 1
+        print(f"demande de repositionnement du pion neutre {numero}")
         pion_neutre_repositionner(pion_n, numero)
+        numero += 1
 
 
 def pion_neutre_present(list_neutre: list, test: int):

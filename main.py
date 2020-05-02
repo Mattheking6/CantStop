@@ -190,8 +190,8 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
             self.choix = [int(self.tableau_boutons[choix][option].text())]
         # Afficher les noirs
         print(f"Nouveau choix: {self.choix}")
-        self.replacer_neutre()
         lst_neutre = self.partie.liste_neutre.copy()
+        self.replacer_neutre()
         for echelle in self.choix:
             hauteur, numero = self.partie.nouvelle_position_noir(echelle, lst_neutre)
             u.pion_bouger(pions.liste_pions_neutres[numero], 0, echelle, hauteur)
@@ -200,13 +200,14 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
 
     def replacer_neutre(self):
         numero = 0
+        print(f"**** neutres : {self.partie.liste_neutre} ****")
         for neutre in self.partie.liste_neutre:
             # tester qu'il ne s'agit pas d'un neutre à remettre à sa place
             if neutre[0] == 0:
-                u.pion_neutre_repositionner(pions.liste_pions_neutres[numero], numero + 1)
+                u.pion_neutre_repositionner(pions.liste_pions_neutres[numero], numero)
             else:
                 u.pion_bouger(pions.liste_pions_neutres[numero], 0, neutre[0], neutre[1])
-                numero += 1
+            numero += 1
 
     def verification(self, poursuite):
         if not poursuite:
@@ -361,7 +362,7 @@ class Pions:
                             for joueur in range(1, 5)
                             for colonne in range(2, 13)}
         # creer les pions noirs
-        self.liste_pions_neutres = [u.pion_neutre_initier(jeu.centralwidget, _) for _ in range(1, 4)]
+        self.liste_pions_neutres = [u.pion_neutre_initier(jeu.centralwidget, _) for _ in range(3)]
 
     def nouvelle_partie(self):
         # cacher les pions

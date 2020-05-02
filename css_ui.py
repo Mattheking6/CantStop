@@ -33,7 +33,7 @@ class Ui_MainWindow(object):
         self.Plateau.setEnabled(True)
         self.Plateau.setGeometry(QtCore.QRect(0, 0, 821, 661))
         self.Plateau.setText("")
-        self.Plateau.setPixmap(QtGui.QPixmap(":/interface/montagne-sigmar.jpg"))
+        self.Plateau.setPixmap(QtGui.QPixmap(":/interface/montagne-matt.jpg"))
         self.Plateau.setObjectName("Plateau")
         self.DeA = QtWidgets.QLabel(self.centralwidget)
         self.DeA.setGeometry(QtCore.QRect(50, 50, 40, 40))

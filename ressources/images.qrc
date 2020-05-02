@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="interface">
+    <file>montagne-matt.jpg</file>
     <file>De.png</file>
     <file>PionBlanc.png</file>
     <file>PionBleu.png</file>
