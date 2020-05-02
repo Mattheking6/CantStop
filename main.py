@@ -19,7 +19,6 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
 
         self.actionQuitter.triggered.connect(self.close)
 
-
         # Nouvelles parties
         self.action2_joueurs.triggered.connect(lambda: self.nouvelle_partie(2))
         self.action3_joueurs.triggered.connect(lambda: self.nouvelle_partie(3))
@@ -28,11 +27,10 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
         # necessaire pour manager le plateau
         self.choix = []  # cle = numero de choix tuples possible , cle 0 = choix definitif
 
-
         # Tableau des boutons
         self.tableau_boutons = [[self.Choix_1_0, self.Choix_1_1, self.Choix_1_2],
-                               [self.Choix_2_0, self.Choix_2_1, self.Choix_2_2],
-                               [self.Choix_3_0, self.Choix_3_1, self.Choix_3_2]]
+                                [self.Choix_2_0, self.Choix_2_1, self.Choix_2_2],
+                                [self.Choix_3_0, self.Choix_3_1, self.Choix_3_2]]
 
         # action sur les boutons
         self.initier_boutons()
@@ -43,23 +41,24 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
         # les objets hors interface
         self.partie = None
 
-
     def initier_boutons(self):
         # Les actions des boutons stop et continuer
         self.Continue.clicked.connect(self.continuer)
         self.Stop.clicked.connect(self.stopper)
+        self.Echec.clicked.connect(self.echec)
         # Les actions des boutons de choix
         for choix in range(3):
             for option in range(3):
-                self.tableau_boutons[choix][option].clicked.connect(self.test(choix, option))
+                self.tableau_boutons[choix][option].clicked.connect(self.f_activer_choix(choix, option))
 
-    def test(self, val1, val2):
+    def f_activer_choix(self, val1, val2):
         return lambda: self.activer_choix(val1, val2)
 
     def desactiver_bouton(self):
         # desactiver bouton
         self.Continue.setEnabled(False)
         self.Stop.setEnabled(False)
+        self.Echec.setVisible(False)
         for choix in range(3):
             for option in range(3):
                 self.tableau_boutons[choix][option].setDisabled(True)
@@ -86,38 +85,41 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
         self.nouveau_tour()
 
     def continuer(self):
-        print("continuer")
-        print(f"choix : {self.choix}")
+        print(f"==> Continuer avec le choix : {self.choix}")
         # Rendre effectif le choix
         self.partie.bouger_n(self.choix)
-        self.nouveau_lance()
+        poursuite = self.nouveau_lance()
+        self.verification(poursuite)
 
     def stopper(self):
-        print("stopper")
-        print(self.choix)
-        # todo fix : trouver la position des pions
-        position = 1
+        print(f"==> Stopper avec le choix : {self.choix}")
+        # Faire le dernier mouvement
+        self.partie.bouger_n(self.choix)
+        # Regarder ou en sont les noirs et les remplacer
+        self.partie.ajouter_pion_c()
         # todo verifier qu'on peut mettre les pions
         self.partie.ajouter_pion_c(self.choix[0], position)
         self.nouveau_tour()
+
 
     def nouveau_tour(self):
         # Afficher la couleur du joueur
         self.partie.tour_suivant()
         self.JoueurCourant.setPixmap(u.image_pion(self.partie.couleurs_joueurs[self.partie.j_actuel]))
-        self.nouveau_lance()
+        poursuite = self.nouveau_lance()
+        self.verification(poursuite)
 
     def nouveau_lance(self):
         # On desactive les boutons
         self.desactiver_bouton()
         # On lance les dés
-        des, possibilite = u.lancer_de()
+        possibilite = u.lancer_de(self.DeA, self.DeB, self.DeC, self.DeD)
         # retrouver les infos du plateau
         neutres_restants, possible_neutres, possible_autres = self.partie.trouver_position_jouable()
-        print(f"possible_neutres {possible_neutres}")
-        print(f"possible_autres {possible_autres}")
 
         zip_boutons = zip(possibilite, self.tableau_boutons)
+        blocage = 0
+
         # Afficher les possibilites
         for choix, bouton in zip_boutons:
             # Afficher les possibilités
@@ -139,8 +141,6 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
                 pos[1] = True
                 cout += 1
 
-            print(f"choix[0] : {choix[0]} , choix[1] : {choix[1]} , cout = {cout}, pos[0] = {pos[0]}, pos[1] = {pos[1]}")
-
             if all([pos[0], pos[1], cout <= neutres_restants]):
                 # On peut bouger les 2 pions
                 print(f" {choix} ==> On peut bouger les 2 pions")
@@ -150,6 +150,7 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
                 pprint(pos[1])
                 # On ne peut rien faire
                 print(f" {choix} ==> Aucun choix possible")
+                blocage += 1
             else:
                 # On ne peut choisir qu'une possibilité
                 if pos[0]:
@@ -158,6 +159,9 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
                 if pos[1]:
                     print(f" {choix} ==> Bouton 2")
                     bouton[2].setEnabled(True)
+        self.show()
+
+        return False if blocage == 3 else True
 
 
     def activer_choix(self, choix, option):
@@ -173,6 +177,14 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
         # Afficher les noirs
         # Todo modifier l'affichage
         print(f"Nouveau choix: {self.choix}")
+
+    def verification(self, poursuite):
+        if not poursuite:
+            print("** Plus rien n'est jouable !!! **")
+            self.Echec.setVisible(True)
+
+    def echec(self):
+        self.nouveau_tour()
 
 
 class Partie:
@@ -195,6 +207,10 @@ class Partie:
         else:
             self.j_actuel += 1
 
+        # Ranger les neutres
+        self.liste_neutre = [(0, 0), (0, 0), (0, 0)]
+        pions.nouveau_tour()
+
         # Affecter la position du joueur
         self.position_joueur = self.joueur[self.j_actuel].position.copy()
         pprint(self.position_joueur)
@@ -206,9 +222,18 @@ class Partie:
         couleur = self.couleurs_joueurs[self.j_actuel]
         return couleur
 
+    @property
+    def neutres_poses(self):
+        """
+        filtre la liste des neutres (echelle, position) avec ceux sur les échelles
+        :return:
+        """
+        neutres = list(filter(lambda x: x[0] != 0, self.liste_neutre))
+        return neutres
+
     def trouver_position_jouable(self) -> (int, list, list):
         # Les pions neutres poses
-        neutres = list(filter(lambda x: x[0] != 0, self.liste_neutre))
+        neutres = self.neutres_poses()
         neutres_restants = 3 - len(neutres)
         if len(neutres):
             # verifier qu'on n'est pas déjà en haut
@@ -226,6 +251,7 @@ class Partie:
                                if numero not in possible_neutres]
 
         return neutres_restants, possible_neutres, possible_autres
+
 
     def bouger_n(self, colonnes):
         for colonne in colonnes:
@@ -245,10 +271,13 @@ class Partie:
             self.liste_neutre[numero] = (colonne, emplacement)
             print(f"pions neutres : {self.liste_neutre}")
 
+    def ajouter_pion_c(self):
+        for neutre in self.neutres_poses:
+            # partie graphique
+            u.pion_ajouter(pions.liste_pions[self.j_actuel, neutre[0]], self.j_actuel, neutre[0], neutre[1],
+                           self.couleur_actuelle)
+            # partie logique
 
-    def ajouter_pion_c(self, colonne, position):
-        u.pion_ajouter(pions.liste_pions[self.j_actuel, colonne], self.j_actuel, colonne, position,
-                       self.couleur_actuelle)
 
 
 class Joueur:
@@ -275,7 +304,10 @@ class Pions:
     def nouvelle_partie(self):
         # cacher les pions
         u.raz(self.liste_pions, self.liste_pions_neutres)
-        # mettre les scores a 0
+
+    def nouveau_tour(self):
+        # ranger les neutres
+        u.ranger_neutre(self.liste_pions_neutres)
 
 
 if __name__ == '__main__':

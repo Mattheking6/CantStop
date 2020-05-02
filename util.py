@@ -16,18 +16,24 @@ POSITION_neutre = {1: QRect(50, 190, 41, 41),
                  3: QRect(50, 290, 41, 41)}
 
 
-def lancer_de():
+def lancer_de(DeA: QLabel, DeB: QLabel, DeC: QLabel, DeD: QLabel,):
     """
     Effectue un lance de dés et expose le résultat
-    :return: lancer_des : liste des 4 dés
-             possibilite : liste des 3 possibilités
+    :return: possibilite : liste des 3 possibilités
     """
     lancer_des = [rand.randrange(1, 7) for _ in range(4)]
     possibilite = [(lancer_des[0] + lancer_des[1], lancer_des[2] + lancer_des[3]),
                    (lancer_des[0] + lancer_des[2], lancer_des[1] + lancer_des[3]),
                    (lancer_des[0] + lancer_des[3], lancer_des[2] + lancer_des[1])
                    ]
-    return lancer_des, possibilite
+
+    # Afficher les dés
+    DeA.setPixmap(image_de(lancer_des[0]))
+    DeB.setPixmap(image_de(lancer_des[1]))
+    DeC.setPixmap(image_de(lancer_des[2]))
+    DeD.setPixmap(image_de(lancer_des[3]))
+
+    return possibilite
 
 
 def image_pion(couleur: str):
@@ -159,6 +165,10 @@ def pion_bouger(pion: QLabel, joueur: int, colonne: int, position: int):
 def raz(liste_couleur: dict, liste_neutre: list):
     for pion, pion_c in liste_couleur.items():
         pion_c.hide()
+    ranger_neutre(liste_neutre)
+
+
+def ranger_neutre(liste_neutre: list):
     numero = 0
     for pion_n in liste_neutre:
         numero += 1
