@@ -332,7 +332,7 @@ class Ui_MainWindow(object):
         self.actionCharger.setEnabled(False)
         self.actionCharger.setObjectName("actionCharger")
         self.actionRegles = QtWidgets.QAction(MainWindow)
-        self.actionRegles.setEnabled(False)
+        self.actionRegles.setEnabled(True)
         self.actionRegles.setObjectName("actionRegles")
         self.actionA_propos = QtWidgets.QAction(MainWindow)
         self.actionA_propos.setEnabled(False)

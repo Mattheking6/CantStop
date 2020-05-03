@@ -3,10 +3,17 @@ from pprint import pprint
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 import sys
-import time
 
 import css_ui as ui
+import Regle_ui
 import util as u
+import time
+
+
+class Regle(QDialog, Regle_ui.Ui_Regles):
+    def __init__(self):
+        QDialog.__init__(self)
+        self.setupUi(self)
 
 
 class Jeu(QMainWindow, ui.Ui_MainWindow):
@@ -22,6 +29,7 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
         self.action2_joueurs.triggered.connect(lambda: self.nouvelle_partie(2))
         self.action3_joueurs.triggered.connect(lambda: self.nouvelle_partie(3))
         self.action4_joueurs.triggered.connect(lambda: self.nouvelle_partie(4))
+        self.actionRegles.triggered.connect(self.afficher_regle)
 
         # Tableau des boutons
         self.tableau_boutons = [[self.Choix_1_0, self.Choix_1_1, self.Choix_1_2],
@@ -57,6 +65,12 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
                 self.tableau_boutons[choix][option].clicked.connect(self.f_activer_choix(choix, option))
         # cacher gagné
         self.Gagne.setVisible(False)
+
+    def afficher_regle(self):
+        dialog_regle = QDialog()
+        regle = Regle()
+        regle.show()
+        dialog_regle.exec()
 
     def f_activer_choix(self, val1, val2):
         return lambda: self.activer_choix(val1, val2)
