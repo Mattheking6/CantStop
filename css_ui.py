@@ -335,7 +335,7 @@ class Ui_MainWindow(object):
         self.actionRegles.setEnabled(True)
         self.actionRegles.setObjectName("actionRegles")
         self.actionA_propos = QtWidgets.QAction(MainWindow)
-        self.actionA_propos.setEnabled(False)
+        self.actionA_propos.setEnabled(True)
         self.actionA_propos.setObjectName("actionA_propos")
         self.action2_joueurs = QtWidgets.QAction(MainWindow)
         self.action2_joueurs.setObjectName("action2_joueurs")

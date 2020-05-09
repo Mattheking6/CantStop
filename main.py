@@ -5,12 +5,19 @@ from PyQt5.QtWidgets import *
 import sys
 
 import css_ui as ui
+import A_Propos_ui
 import Regle_ui
 import util as u
 import time
 
 
 class Regle(QDialog, Regle_ui.Ui_Regles):
+    def __init__(self):
+        QDialog.__init__(self)
+        self.setupUi(self)
+
+
+class APropos(QDialog, A_Propos_ui.Ui_Propos):
     def __init__(self):
         QDialog.__init__(self)
         self.setupUi(self)
@@ -30,6 +37,10 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
         self.action3_joueurs.triggered.connect(lambda: self.nouvelle_partie(3))
         self.action4_joueurs.triggered.connect(lambda: self.nouvelle_partie(4))
         self.actionRegles.triggered.connect(self.afficher_regle)
+        self.actionA_propos.triggered.connect(self.afficher_propos)
+
+        # Barre de statut
+        self.statusBar().showMessage('Commencez une nouvelle partie.')
 
         # Tableau des boutons
         self.tableau_boutons = [[self.Choix_1_0, self.Choix_1_1, self.Choix_1_2],
@@ -66,11 +77,19 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
         # cacher gagné
         self.Gagne.setVisible(False)
 
-    def afficher_regle(self):
-        dialog_regle = QDialog()
+    @staticmethod
+    def afficher_regle():
+        dialog_regle = QDialog(jeu.centralwidget)
         regle = Regle()
         regle.show()
-        dialog_regle.exec()
+        result = dialog_regle.exec_()
+
+    @staticmethod
+    def afficher_propos():
+        dialog_propos = QDialog()
+        propos = APropos()
+        propos.show()
+        dialog_propos.exec()
 
     def f_activer_choix(self, val1, val2):
         return lambda: self.activer_choix(val1, val2)
@@ -131,6 +150,7 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
             self.desactiver_bouton()
             u.ranger_neutre(pions.liste_pions_neutres)
             self.Gagne.setVisible(True)
+            self.statusBar().showMessage(f'Victoire du joueur {self.partie.couleur_actuelle}, Bravo !!!')
         else:
             self.nouveau_tour()
 
@@ -139,6 +159,7 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
         self.partie.tour_suivant()
         self.JoueurCourant.setPixmap(u.image_pion(self.partie.couleurs_joueurs[self.partie.j_actuel]))
         poursuite = self.nouveau_lance()
+        self.statusBar().showMessage(f'Tour du joueur {self.partie.couleur_actuelle}.')
         self.verification(poursuite)
 
     def nouveau_lance(self):
@@ -226,6 +247,8 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
     def verification(self, poursuite):
         if not poursuite:
             print("** Plus rien n'est jouable !!! **")
+            self.statusBar().showMessage(f'Aucun positionnement possible.'
+                                         f' Perte de la progression, tour du joueur suivant.')
             self.Echec.setVisible(True)
 
     def echec(self):
