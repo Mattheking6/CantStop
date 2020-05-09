@@ -79,17 +79,13 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
 
     @staticmethod
     def afficher_regle():
-        dialog_regle = QDialog(jeu.centralwidget)
-        regle = Regle()
-        regle.show()
-        result = dialog_regle.exec_()
+        dialog_regle = Regle()
+        dialog_regle.exec_()
 
     @staticmethod
     def afficher_propos():
-        dialog_propos = QDialog()
-        propos = APropos()
-        propos.show()
-        dialog_propos.exec()
+        dialog_propos = APropos()
+        dialog_propos.exec_()
 
     def f_activer_choix(self, val1, val2):
         return lambda: self.activer_choix(val1, val2)
@@ -150,7 +146,7 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
             self.desactiver_bouton()
             u.ranger_neutre(pions.liste_pions_neutres)
             self.Gagne.setVisible(True)
-            self.statusBar().showMessage(f'Victoire du joueur {self.partie.couleur_actuelle}, Bravo !!!')
+            self.statusBar().showMessage(f'Victoire du joueur {self.partie.couleur_actuelle}. Bravo !!!')
         else:
             self.nouveau_tour()
 
