@@ -16,7 +16,7 @@ POSITION_neutre = [QRect(50, 190, 41, 41),
                    QRect(50, 290, 41, 41)]
 
 
-def lancer_de(DeA: QLabel, DeB: QLabel, DeC: QLabel, DeD: QLabel,):
+def lancer_de(de_a: QLabel, de_b: QLabel, de_c: QLabel, de_d: QLabel, ):
     """
     Effectue un lance de dés et expose le résultat
     :return: possibilite : liste des 3 possibilités
@@ -28,10 +28,10 @@ def lancer_de(DeA: QLabel, DeB: QLabel, DeC: QLabel, DeD: QLabel,):
                    ]
 
     # Afficher les dés
-    DeA.setPixmap(image_de(lancer_des[0]))
-    DeB.setPixmap(image_de(lancer_des[1]))
-    DeC.setPixmap(image_de(lancer_des[2]))
-    DeD.setPixmap(image_de(lancer_des[3]))
+    de_a.setPixmap(image_de(lancer_des[0]))
+    de_b.setPixmap(image_de(lancer_des[1]))
+    de_c.setPixmap(image_de(lancer_des[2]))
+    de_d.setPixmap(image_de(lancer_des[3]))
 
     return possibilite
 
@@ -139,7 +139,6 @@ def pion_neutre_repositionner(pion_neutre: QLabel, numero: int):
     :param pion_neutre: le label du pion
     :param numero: le numéro du pion
     """
-    print(f"Repositionnement du pion neutre {numero}")
     pion_neutre.setGeometry(POSITION_neutre[numero])
 
 

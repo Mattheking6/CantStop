@@ -39,6 +39,11 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
         self.actionRegles.triggered.connect(self.afficher_regle)
         self.actionA_propos.triggered.connect(self.afficher_propos)
 
+        # Apparence
+        self.actionAppSoft.triggered.connect(lambda: self.design("soft"))
+        self.actionAppBois.triggered.connect(lambda: self.design("bois"))
+        self.actionAppCouleur.triggered.connect(lambda: self.design("couleur"))
+
         # Barre de statut
         self.statusBar().showMessage('Commencez une nouvelle partie.')
 
@@ -104,7 +109,7 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
             self.tableau_echelles[index].setVisible(False)
 
     def icone_windows(self):
-        systray_icon = QIcon("ressources\De5.png")
+        systray_icon = QIcon(r"ressources\De5.png")
         systray = QSystemTrayIcon(systray_icon, self)
         menu = QMenu()
         restore = QAction("Restaurer", self)
@@ -250,6 +255,14 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
     def echec(self):
         self.nouveau_tour()
 
+    def design(self, param):
+        self.actionAppSoft.setChecked(False)
+        self.actionAppCouleur.setChecked(False)
+        self.actionAppBois.setChecked(False)
+        design_choix = self.sender()
+        design_choix.setChecked(True)
+        self.Plateau.setPixmap(QPixmap(f":/interface/plateau_{param}.jpg"))
+
 
 class Partie:
     def __init__(self, nombre_joueurs):
@@ -290,7 +303,7 @@ class Partie:
         filtre la liste des neutres (echelle, position) avec ceux sur les échelles
         :return:
         """
-        neutres = list(filter(lambda x: x[0] != 0, self.liste_neutre))
+        neutres = list(filter(lambda l: l[0] != 0, self.liste_neutre))
         return neutres
 
     def trouver_position_jouable(self) -> (int, list, list):
@@ -422,9 +435,8 @@ if __name__ == '__main__':
             # time.sleep(0.1)
 
         jeu.show()
-        app.exec_()
-
         splash.finish(jeu)
+        sys.exit(app.exec_())
 
     except ValueError as e:
         str(e)
