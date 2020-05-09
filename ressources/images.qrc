@@ -1,6 +1,8 @@
 <RCC>
   <qresource prefix="interface">
-    <file>montagne-matt.jpg</file>
+    <file>plateau_bois.jpg</file>
+    <file>plateau_couleur.jpg</file>
+    <file>plateau_soft.jpg</file>
     <file>De.png</file>
     <file>PionBlanc.png</file>
     <file>PionBleu.png</file>
