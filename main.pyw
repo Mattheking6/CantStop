@@ -39,7 +39,10 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
         self.actionA_propos.triggered.connect(self.afficher_propos)
 
         # Apparence
+<<<<<<<< HEAD:main.pyw
         self.actionAppSoft.setChecked(True)
+========
+>>>>>>>> origin/dev:main.py
         self.actionAppSoft.triggered.connect(lambda: self.design("soft"))
         self.actionAppBois.triggered.connect(lambda: self.design("bois"))
         self.actionAppCouleur.triggered.connect(lambda: self.design("couleur"))
