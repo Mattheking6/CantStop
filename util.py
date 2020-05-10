@@ -15,7 +15,7 @@ POSITION_neutre = [QRect(50, 190, 41, 41),
                    QRect(50, 290, 41, 41)]
 
 
-def lancer_de(de_a: QLabel, de_b: QLabel, de_c: QLabel, de_d: QLabel, ):
+def lancer_de(de_a: QLabel, de_b: QLabel, de_c: QLabel, de_d: QLabel):
     """
     Effectue un lance de dés et expose le résultat
     :return: possibilite : liste des 3 possibilités
