@@ -46,6 +46,9 @@
    <bool>false</bool>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
    <widget class="QLabel" name="Plateau">
     <property name="enabled">
      <bool>true</bool>
@@ -62,7 +65,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="ressources/images.qrc">:/interface/montagne-matt.jpg</pixmap>
+     <pixmap resource="ressources/images.qrc">:/interface/plateau_soft.jpg</pixmap>
     </property>
    </widget>
    <widget class="QLabel" name="DeA">
@@ -854,7 +857,6 @@
    <zorder>DeD</zorder>
    <zorder>Continue</zorder>
    <zorder>Stop</zorder>
-   <zorder>groupBox</zorder>
    <zorder>frame</zorder>
    <zorder>Gagne</zorder>
    <zorder>Echelle_2</zorder>
@@ -868,6 +870,7 @@
    <zorder>Echelle_11</zorder>
    <zorder>Echelle_12</zorder>
    <zorder>Echelle_7</zorder>
+   <zorder>groupBox</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -891,9 +894,16 @@
      <addaction name="action3_joueurs"/>
      <addaction name="action4_joueurs"/>
     </widget>
+    <widget class="QMenu" name="menuApparence">
+     <property name="title">
+      <string>Apparence</string>
+     </property>
+     <addaction name="actionAppSoft"/>
+     <addaction name="actionAppCouleur"/>
+     <addaction name="actionAppBois"/>
+    </widget>
     <addaction name="menuNouvelle_partie"/>
-    <addaction name="actionSauvegarder"/>
-    <addaction name="actionCharger"/>
+    <addaction name="menuApparence"/>
     <addaction name="separator"/>
     <addaction name="actionQuitter"/>
    </widget>
@@ -919,31 +929,9 @@
     <string>Quitter</string>
    </property>
   </action>
-  <action name="actionSauvegarder">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Sauvegarder</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+S</string>
-   </property>
-  </action>
-  <action name="actionCharger">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Charger</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+C</string>
-   </property>
-  </action>
   <action name="actionRegles">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="text">
     <string>Règles</string>
@@ -951,7 +939,7 @@
   </action>
   <action name="actionA_propos">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="text">
     <string>A propos...</string>
@@ -981,9 +969,43 @@
     <string>Ctrl+4</string>
    </property>
   </action>
+  <action name="actionAppSoft">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Soft</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+7</string>
+   </property>
+  </action>
+  <action name="actionAppCouleur">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Couleur</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+8</string>
+   </property>
+  </action>
+  <action name="actionAppBois">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Bois</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+9</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="ressources/images.qrc"/>
+  <include location="../../../../Users/mmureau/.designer/backup/ressources/images.qrc"/>
  </resources>
  <connections/>
 </ui>

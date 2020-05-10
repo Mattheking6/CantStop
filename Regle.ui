@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Regles</class>
+ <widget class="QDialog" name="Regles">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>739</width>
+    <height>457</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Règles du jeu</string>
+  </property>
+  <widget class="QLabel" name="ReglesCantStop">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>20</y>
+     <width>691</width>
+     <height>421</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Règles du jeu Can’t Stop :&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Dans ce classique de Sid Sackson, les joueurs doivent tenter leur chance avec des dés et choisir des combinaisons tactiquement pour fermer &lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;trois colonnes&lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Le tableau contient une colonne pour chaque total possible de deux dés à six faces, mais le nombre de cases de chaque colonne varie: plus un total est probable, plus il y a d'espace dans la colonne et plus il faut rouler.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;À son tour, un joueur jette quatre dés et les range en duo, par exemple 1 4 5 6 peut devenir :&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;- 1 + 4 et 5 + 6 pour 5 et 11&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;- 1 + 5 et 4 + 6 pour 6 et 10&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;- 1 + 6 et 4 + 5 pour 7 et 9&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Le joueur place ou avance les marqueurs de progression aux colonne(s) libre(s) associée(s) aux totaux choisis, puis choisit:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;- de rouler à nouveau&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;- ou de terminer son tour et de remplacer les marqueurs de progression par des marqueurs de leur couleur.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Un j&lt;/span&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline;&quot;&gt;oueur ne peut avancer que de trois colonnes différentes dans un tour&lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt; et ne peut pas avancer de colonne que tout joueur a fermé en atteignant l’espace final.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Si un résultat ne donne lieu à un &lt;/span&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline;&quot;&gt;aucun jeu légal&lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;, &lt;/span&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline;&quot;&gt;le tour se termine avec la perte de son progrès&lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="textFormat">
+    <enum>Qt::RichText</enum>
+   </property>
+   <property name="wordWrap">
+    <bool>true</bool>
+   </property>
+   <property name="textInteractionFlags">
+    <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
