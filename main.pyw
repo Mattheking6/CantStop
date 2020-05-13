@@ -178,6 +178,7 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
 
         zip_boutons = zip(possibilite, self.tableau_boutons)
         blocage = 0
+        self.liste_choix.clear()
 
         # Afficher les possibilites
         for choix, bouton in zip_boutons:
@@ -225,11 +226,11 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
         if bot and self.partie.j_actuel == 2 and blocage != 3:
             self.desactiver_bouton()
             jeu.repaint()
-            time.sleep(3)
+            time.sleep(0)
             bot_choix, bot_continue = ordi[0].jouer(self.partie.joueur, self.liste_choix)
             self.activer_choix(bot_choix)
             jeu.repaint()
-            time.sleep(3)
+            time.sleep(1)
             if bot_continue:
                 self.continuer()
             else:
@@ -385,7 +386,7 @@ class Partie:
             # Trouver l'avancement du joueur
             emplacement = self.joueur[self.j_actuel].position[colonne]
             if numero is None:
-                raise ValueError("Il n'y a plus de point noir dispo")
+                raise ValueError("Il n'y a plus de pions noir dispo")
 
         # Déplacement du pion noir si pas déjà arrivé
         if u.ECHELLE[colonne] != emplacement:
