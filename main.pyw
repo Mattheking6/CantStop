@@ -1,12 +1,13 @@
-from pprint import pprint
+import sys
+import time
 
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-import sys
 
 import css_ui as ui
 import A_Propos_ui
 import Regle_ui
+import joueur
 import util as u
 
 
@@ -69,6 +70,7 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
 
         # necessaire pour manager le jeu
         self.choix = []
+        self.liste_choix = []
 
     def initier_boutons(self):
         # Les actions des boutons stop et continuer
@@ -93,7 +95,7 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
         dialog_propos.exec_()
 
     def f_activer_choix(self, val1, val2):
-        return lambda: self.activer_choix(val1, val2)
+        return lambda: self.decoder_choix(val1, val2)
 
     def desactiver_bouton(self):
         # desactiver bouton
@@ -127,6 +129,9 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
         self.desactiver_echelles()
         # On lance un nouveau jeu
         self.partie = Partie(nb_joueurs)
+        # si on joue contre l'ordinateur
+        if bot:
+            ordi.append(joueur.Bot(aggressivite))
         self.Choix_1_0.setVisible(True)
         self.Choix_2_0.setVisible(True)
         self.Choix_3_0.setVisible(True)
@@ -184,6 +189,7 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
             # Activer uniquement ce qui est possible
             cout = 0
             pos = 2 * [False]
+
             if choix[0] in possible_neutres:
                 pos[0] = True
             elif choix[0] in possible_autres:
@@ -199,6 +205,7 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
                 # On peut bouger les 2 pions
                 print(f" {choix} ==> On peut bouger les 2 pions")
                 bouton[0].setEnabled(True)
+                self.liste_choix.append(choix)
             elif not any([pos[0], pos[1]]):
                 # On ne peut rien faire
                 print(f" {choix} ==> Aucun choix possible")
@@ -208,24 +215,47 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
                 if pos[0]:
                     print(f" {choix} ==> Bouton 1")
                     bouton[1].setEnabled(True)
+                    self.liste_choix.append(choix[0])
                 if pos[1]:
                     print(f" {choix} ==> Bouton 2")
                     bouton[2].setEnabled(True)
-        self.show()
+                    self.liste_choix.append(choix[1])
+        self.repaint()
+
+        if bot and self.partie.j_actuel == 2 and blocage != 3:
+            self.desactiver_bouton()
+            jeu.repaint()
+            time.sleep(3)
+            bot_choix, bot_continue = ordi[0].jouer(self.partie.joueur, self.liste_choix)
+            self.activer_choix(bot_choix)
+            jeu.repaint()
+            time.sleep(3)
+            if bot_continue:
+                self.continuer()
+            else:
+                self.stopper()
 
         return False if blocage == 3 else True
 
-    def activer_choix(self, choix, option):
+    def decoder_choix(self, choix, option):
         self.Continue.setEnabled(True)
         self.Stop.setEnabled(True)
         # le choix actuel
         if option == 0:
             # noinspection PyUnresolvedReferences
             texte1, texte2 = str(self.tableau_boutons[choix][option].text()).split(" et ")
-            self.choix = [int(texte1), int(texte2)]
+            choix_res = [int(texte1), int(texte2)]
         else:
             # noinspection PyUnresolvedReferences
-            self.choix = [int(self.tableau_boutons[choix][option].text())]
+            choix_res = [int(self.tableau_boutons[choix][option].text())]
+        self.activer_choix(choix_res)
+
+    def activer_choix(self, choix: list):
+        # le choix actuel
+        if len(choix) == 2:
+            self.choix = [choix[0], choix[1]]
+        else:
+            self.choix = choix
         # Afficher les noirs
         print(f"Nouveau choix: {self.choix}")
         lst_neutre = self.partie.liste_neutre.copy()
@@ -426,6 +456,9 @@ if __name__ == '__main__':
         app = QApplication(sys.argv)
         jeu = Jeu()
         pions = Pions()
+        bot = True
+        aggressivite = 85
+        ordi = []
 
         splash_image = u.image_de(1)
         splash = QSplashScreen()

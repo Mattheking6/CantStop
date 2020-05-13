@@ -1,5 +1,3 @@
-
-
 def retourne_possibilite(des: tuple):
     """
     Calcule les possibilités
@@ -13,15 +11,16 @@ def retourne_possibilite(des: tuple):
 
     return list(set(possibilite))
 
+
 def test_probabilite(combinaisons, choix: set):
     """
     Calcule le pourcentage de réalisation d'un set
     :return: pourcentage de reussite
     """
     resultat_match = [_ for _ in combinaisons
-                            if set(_) & choix]
+                      if set(_) & choix]
     print(resultat_match)
-    reussite = len(resultat_match) * 100 / 1296
+    reussite = len(resultat_match) / 1296
     return reussite
 
 
@@ -32,19 +31,8 @@ if __name__ == '__main__':
                     for d in range(1, 7)]
 
     combinaisons = list(map(retourne_possibilite, des_possible))
-    print(combinaisons)
 
-    # toutes_combinaison = [_ for res in combinaisons
-    #                       for _ in res
-    #                       ]
-    # print(toutes_combinaison)
-    #
-    # occurences = {echelle: toutes_combinaison.count(echelle) for echelle in range(2, 13)}
-    # print(occurences)
-    #
-    # pourcentage = {echelle: toutes_combinaison.count(echelle) * 100 / 1296 for echelle in range(2, 13)}
-    # print(pourcentage)
-
-    a_tester = {6, 7, 8}
+    # a_tester = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
+    a_tester = {2, 3, 10}
     calcul_reussite = test_probabilite(combinaisons, a_tester)
     print(calcul_reussite)
