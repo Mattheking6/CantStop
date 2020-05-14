@@ -3,6 +3,7 @@ import time
 
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
+from PyQt5.QtCore import Qt
 
 import css_ui as ui
 import A_Propos_ui
@@ -13,20 +14,20 @@ import util as u
 
 class Regle(QDialog, Regle_ui.Ui_Regles):
     def __init__(self):
-        QDialog.__init__(self)
+        QDialog.__init__(self, flags=Qt.WindowFlags())
         self.setupUi(self)
 
 
 class APropos(QDialog, A_Propos_ui.Ui_Propos):
     def __init__(self):
-        QDialog.__init__(self)
+        QDialog.__init__(self, flags=Qt.WindowFlags())
         self.setupUi(self)
 
 
 class Jeu(QMainWindow, ui.Ui_MainWindow):
     """Classe pour gérer le plateau de jeu et les actions des joueurs"""
     def __init__(self):
-        QMainWindow.__init__(self)
+        QMainWindow.__init__(self, flags=Qt.WindowFlags())
         self.setupUi(self)
 
         # Afficher le menu contextuel windows
@@ -150,7 +151,7 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
         self.partie = Partie(nb_joueurs)
         # si on joue contre l'ordinateur
         if bot:
-            ordi.append(joueur.Bot(aggressivite))
+            ordi.append(joueur.Bot(2, aggressivite))
         self.Choix_1_0.setVisible(True)
         self.Choix_2_0.setVisible(True)
         self.Choix_3_0.setVisible(True)
@@ -258,11 +259,11 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
         """Faire jouer un bot"""
         self.desactiver_bouton()
         jeu.repaint()
-        time.sleep(0)
-        bot_choix, bot_continue = ordi[0].jouer(self.partie.joueur, self.liste_choix)
+        time.sleep(0.1)
+        bot_choix, bot_continue = ordi[0].jouer(self.partie.joueur, self.liste_choix, self.partie.liste_neutre)
         self.activer_choix(bot_choix)
         jeu.repaint()
-        time.sleep(1)
+        time.sleep(0.5)
         if bot_continue:
             self.continuer()
         else:
@@ -492,9 +493,9 @@ class Pions:
     """Classe pour gérer les pions sur le plateau"""
     def __init__(self):
         # creer un pion par joueur et par colonne
-        self.liste_pions = {(joueur, colonne): u.pion_initier(jeu.centralwidget, joueur, colonne)
-                            for joueur in range(1, 5)
-                            for colonne in range(2, 13)}
+        self.liste_pions = {(num_joueur, num_colonne): u.pion_initier(jeu.centralwidget, num_joueur, num_colonne)
+                            for num_joueur in range(1, 5)
+                            for num_colonne in range(2, 13)}
         # creer les pions noirs
         self.liste_pions_neutres = [u.pion_neutre_initier(jeu.centralwidget, _) for _ in range(3)]
 

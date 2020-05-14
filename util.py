@@ -171,12 +171,14 @@ def pion_bouger(pion: QLabel, joueur: int, colonne: int, position: int):
 
 
 def raz(liste_couleur: dict, liste_neutre: list):
+    """Remettre tous les pions en place"""
     for pion, pion_c in liste_couleur.items():
         pion_c.hide()
     ranger_neutre(liste_neutre)
 
 
 def ranger_neutre(liste_neutre: list):
+    """Ranger les pions neutre pour les rendre disponible"""
     numero = 0
     for pion_n in liste_neutre:
         print(f"demande de repositionnement du pion neutre {numero}")
@@ -185,6 +187,13 @@ def ranger_neutre(liste_neutre: list):
 
 
 def pion_neutre_present(list_neutre: list, test: int):
+    """
+    Verifier la présence d'un pion sur l'échelle demandée
+    :param list_neutre: la liste des pions neutres actuels
+    :param test: l'échelle à tester
+    :return: Si test KO : (None, 0)
+             Si test OK: (le numéro du pion, sa hauteur)
+    """
     count = 0
     for echelle, position in list_neutre:
         if echelle == test:
@@ -194,10 +203,14 @@ def pion_neutre_present(list_neutre: list, test: int):
 
 
 def pion_neutre_dispo(list_neutre: list) -> int:
+    """
+    Donne le 1er pion neutre non encore utilisé
+    :param list_neutre:
+    :return: le numéro du pion neutre qu'on peut utiliser
+    """
     numero = 0
     for emplacement in list_neutre:
         if emplacement == (0, 0):
             return numero
         else:
             numero += 1
-
