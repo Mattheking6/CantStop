@@ -24,6 +24,7 @@ class APropos(QDialog, A_Propos_ui.Ui_Propos):
 
 
 class Jeu(QMainWindow, ui.Ui_MainWindow):
+    """Classe pour gérer le plateau de jeu et les actions des joueurs"""
     def __init__(self):
         QMainWindow.__init__(self)
         self.setupUi(self)
@@ -73,6 +74,10 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
         self.liste_choix = []
 
     def initier_boutons(self):
+        """
+        A faire une fois pour initialiser l'interface
+        :return:
+        """
         # Les actions des boutons stop et continuer
         self.Continue.clicked.connect(self.continuer)
         self.Stop.clicked.connect(self.stopper)
@@ -86,18 +91,30 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
 
     @staticmethod
     def afficher_regle():
+        """
+        Afficher la fenêtre des règles
+        :return:
+        """
         dialog_regle = Regle()
         dialog_regle.exec_()
 
     @staticmethod
     def afficher_propos():
+        """Afficher la fenêtre de l'à propos"""
         dialog_propos = APropos()
         dialog_propos.exec_()
 
-    def f_activer_choix(self, val1, val2):
+    def f_activer_choix(self, val1: int, val2: int):
+        """
+        Fonction relais pour activer les choix de dés
+        :param val1: choix de la ligne (combinaison de dés)
+        :param val2: choix de la colonne (combinaison 1, 2 ou les 2)
+        :return: la vrai fonction
+        """
         return lambda: self.decoder_choix(val1, val2)
 
     def desactiver_bouton(self):
+        """ Désactiver tous les boutons de choix"""
         # desactiver bouton
         self.Continue.setEnabled(False)
         self.Stop.setEnabled(False)
@@ -107,21 +124,23 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
                 self.tableau_boutons[choix][option].setDisabled(True)
 
     def desactiver_echelles(self):
+        """ Rendre les échelles terminées invisible """
         for index in range(2, 13):
             self.tableau_echelles[index].setVisible(False)
 
     def icone_windows(self):
+        """Menu contextuel de windows"""
         systray_icon = QIcon(r"ressources\De5.png")
         systray = QSystemTrayIcon(systray_icon, self)
         menu = QMenu()
-        restore = QAction("Restaurer", self)
         close = QAction("Fermer", self)
-        menu.addActions([restore, close])
+        menu.addActions([close])
         systray.setContextMenu(menu)
         systray.show()
         close.triggered.connect(qApp.quit)
 
-    def nouvelle_partie(self, nb_joueurs):
+    def nouvelle_partie(self, nb_joueurs: int):
+        """Remet le jeu en place pour une nouvelle partie"""
         # repositionner les pions
         pions.nouvelle_partie()
         # Effacer gagné
@@ -138,6 +157,7 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
         self.nouveau_tour()
 
     def continuer(self):
+        """Le joueur choisi de continuer """
         print(f"==> Continuer avec le choix : {self.choix}")
         # Rendre effectif le choix
         self.partie.bouger_n(self.choix)
@@ -145,6 +165,7 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
         self.verification(poursuite)
 
     def stopper(self):
+        """Le joueur chois de stopper"""
         print(f"==> Stopper avec le choix : {self.choix}")
         # Faire le dernier mouvement
         self.partie.bouger_n(self.choix)
@@ -161,6 +182,7 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
             self.nouveau_tour()
 
     def nouveau_tour(self):
+        """Changement de joueur dans la partie """
         # Afficher la couleur du joueur
         self.partie.tour_suivant()
         self.JoueurCourant.setPixmap(u.image_pion(self.partie.couleurs_joueurs[self.partie.j_actuel]))
@@ -169,6 +191,10 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
         self.verification(poursuite)
 
     def nouveau_lance(self):
+        """
+        Nouveau lancé de dé
+        :return: False si aucun choix n'est possible, True si on peux continuer à jouer
+        """
         # On desactive les boutons
         self.desactiver_bouton()
         # On lance les dés
@@ -224,21 +250,26 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
         self.repaint()
 
         if bot and self.partie.j_actuel == 2 and blocage != 3:
-            self.desactiver_bouton()
-            jeu.repaint()
-            time.sleep(0)
-            bot_choix, bot_continue = ordi[0].jouer(self.partie.joueur, self.liste_choix)
-            self.activer_choix(bot_choix)
-            jeu.repaint()
-            time.sleep(1)
-            if bot_continue:
-                self.continuer()
-            else:
-                self.stopper()
+            self.bot_joue()
 
         return False if blocage == 3 else True
 
-    def decoder_choix(self, choix, option):
+    def bot_joue(self):
+        """Faire jouer un bot"""
+        self.desactiver_bouton()
+        jeu.repaint()
+        time.sleep(0)
+        bot_choix, bot_continue = ordi[0].jouer(self.partie.joueur, self.liste_choix)
+        self.activer_choix(bot_choix)
+        jeu.repaint()
+        time.sleep(1)
+        if bot_continue:
+            self.continuer()
+        else:
+            self.stopper()
+
+    def decoder_choix(self, choix: int, option: int):
+        """Décoder le choix lorsqu'il ne s'agit pas d'un bot"""
         self.Continue.setEnabled(True)
         self.Stop.setEnabled(True)
         # le choix actuel
@@ -252,6 +283,7 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
         self.activer_choix(choix_res)
 
     def activer_choix(self, choix: list):
+        """Un joueur a fait un choix de déplacement, le prendre en compte"""
         # le choix actuel
         if len(choix) == 2:
             self.choix = [choix[0], choix[1]]
@@ -268,6 +300,7 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
             lst_neutre[numero] = (echelle, hauteur)
 
     def replacer_neutre(self):
+        """Remettre les pions neutre à leur place"""
         numero = 0
         print(f"**** neutres : {self.partie.liste_neutre} ****")
         for neutre in self.partie.liste_neutre:
@@ -278,7 +311,8 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
                 u.pion_bouger(pions.liste_pions_neutres[numero], 0, neutre[0], neutre[1])
             numero += 1
 
-    def verification(self, poursuite):
+    def verification(self, poursuite: bool):
+        """En cas d'échec faire subir la perte de progression"""
         if not poursuite:
             print("** Plus rien n'est jouable !!! **")
             self.statusBar().showMessage(f'Aucun positionnement possible.'
@@ -286,9 +320,11 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
             self.Echec.setVisible(True)
 
     def echec(self):
+        """En cas d'échec d'un joueur: faire passer le tour par le bouton """
         self.nouveau_tour()
 
-    def design(self, param):
+    def design(self, param: str):
+        """Changer le design du plateau"""
         self.actionAppSoft.setChecked(False)
         self.actionAppCouleur.setChecked(False)
         self.actionAppBois.setChecked(False)
@@ -298,7 +334,10 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
 
 
 class Partie:
-    def __init__(self, nombre_joueurs):
+    """
+    Classe pour gérer la partie en cours
+    """
+    def __init__(self, nombre_joueurs: int):
         print(f"==> Nouvelle partie de {nombre_joueurs} joueurs")
         self._nombre_joueurs = nombre_joueurs
         self.couleurs_joueurs = u.creer_joueurs(nombre_joueurs)
@@ -310,6 +349,10 @@ class Partie:
         self.etat_joueur_actuel = {}
 
     def tour_suivant(self):
+        """
+        Faire passer le tour au prochain joueur
+        :return: le numéro du joueur actuel
+        """
         # increment boucle
         if self.j_actuel == self._nombre_joueurs:
             self.j_actuel = 1
@@ -327,19 +370,27 @@ class Partie:
 
     @property
     def couleur_actuelle(self):
+        """
+        Retrouver la couleur du joueur qui joue actuellement
+        :return: str: la couleur
+        """
         couleur = self.couleurs_joueurs[self.j_actuel]
         return couleur
 
     @property
-    def neutres_poses(self):
+    def neutres_poses(self) -> list:
         """
         filtre la liste des neutres (echelle, position) avec ceux sur les échelles
-        :return:
+        :return: list : les pions neutres
         """
         neutres = list(filter(lambda l: l[0] != 0, self.liste_neutre))
         return neutres
 
     def trouver_position_jouable(self) -> (int, list, list):
+        """
+        trouver les actions possible à l'utilisateur pour son tirage de dés fonction du plateau
+        :return: le nombre de neutre restant, les neutres posés, les échelles encores disponibles
+        """
         # Les pions neutres poses
         neutres = self.neutres_poses
         neutres_restants = 3 - len(neutres)
@@ -362,7 +413,8 @@ class Partie:
                     possible_neutres.remove(test[0])
         return neutres_restants, possible_neutres, possible_autres
 
-    def bouger_n(self, colonnes):
+    def bouger_n(self, colonnes: list):
+        """Faire le déplacement des pions neutres"""
         # invalider les derniers choix temporaires
         jeu.replacer_neutre()
         for colonne in colonnes:
@@ -394,6 +446,7 @@ class Partie:
         return emplacement, numero
 
     def ajouter_pion_c(self):
+        """Ajouter les pions de couleur en remplacement des neutres"""
         for neutre in self.neutres_poses:
             echelle = neutre[0]
             niveau = neutre[1]
@@ -412,12 +465,14 @@ class Partie:
                 self.supprimer_perdant(echelle)
 
     def supprimer_perdant(self, colonne):
+        """Lorsqu'une échelle est terminée, supprimer les pions des autres joueurs"""
         for j in range(1, 5):
             if j != self.j_actuel:
                 pions.liste_pions[j, colonne].hide()
 
 
 class Joueur:
+    """Classe pour gérer l'état de chaque joueur qu'il soit humain ou bot"""
     position: dict
 
     def __init__(self, numero: int, couleur: str):
@@ -434,7 +489,7 @@ class Joueur:
 
 
 class Pions:
-
+    """Classe pour gérer les pions sur le plateau"""
     def __init__(self):
         # creer un pion par joueur et par colonne
         self.liste_pions = {(joueur, colonne): u.pion_initier(jeu.centralwidget, joueur, colonne)
@@ -444,10 +499,12 @@ class Pions:
         self.liste_pions_neutres = [u.pion_neutre_initier(jeu.centralwidget, _) for _ in range(3)]
 
     def nouvelle_partie(self):
+        """Repositionnement de tous les pions"""
         # cacher les pions
         u.raz(self.liste_pions, self.liste_pions_neutres)
 
     def nouveau_tour(self):
+        """Ranger les neutres pour les rendre disponible"""
         # ranger les neutres
         u.ranger_neutre(self.liste_pions_neutres)
 
