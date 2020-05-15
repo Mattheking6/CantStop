@@ -181,7 +181,6 @@ def ranger_neutre(liste_neutre: list):
     """Ranger les pions neutre pour les rendre disponible"""
     numero = 0
     for pion_n in liste_neutre:
-        print(f"demande de repositionnement du pion neutre {numero}")
         pion_neutre_repositionner(pion_n, numero)
         numero += 1
 

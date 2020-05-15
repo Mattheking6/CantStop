@@ -259,11 +259,11 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
         """Faire jouer un bot"""
         self.desactiver_bouton()
         jeu.repaint()
-        time.sleep(0.1)
+        time.sleep(0.2)
         bot_choix, bot_continue = ordi[0].jouer(self.partie.joueur, self.liste_choix, self.partie.liste_neutre)
         self.activer_choix(bot_choix)
         jeu.repaint()
-        time.sleep(0.5)
+        time.sleep(0.8)
         if bot_continue:
             self.continuer()
         else:
@@ -303,7 +303,6 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
     def replacer_neutre(self):
         """Remettre les pions neutre à leur place"""
         numero = 0
-        print(f"**** neutres : {self.partie.liste_neutre} ****")
         for neutre in self.partie.liste_neutre:
             # tester qu'il ne s'agit pas d'un neutre à remettre à sa place
             if neutre[0] == 0:
