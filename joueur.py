@@ -75,25 +75,19 @@ class Bot:
         stop = [False for _ in range(100 - self.aggressivite)]
         self.stop_encore = stop + encore
 
-    def jouer(self, joueurs: dict, options: list, neutres: list) -> (list, bool):
+    def jouer(self, plateau: dict, options: list, neutres: list) -> (list, bool):
         """
         Demander au jouer de jouer, fonction obligatoire
-        :param joueurs: les joueurs avec leurs caractéristiques
+        :param plateau: les joueurs avec leurs caractéristiques
         :param options: fonction de son lancé de dé
         :param neutres: l'emplacement des pions neutres
         :return:
         """
         print("Je réfléchis...")
 
-        # print(f"J'analyse la situation :\n{repr(joueurs)}")
-
-        mes_positions = self.trouver_mes_positions(joueurs, neutres)
-        print(f"Mes positions de jeu : {mes_positions}")
+        mes_positions = self.trouver_mes_positions(plateau, neutres)
 
         mon_choix = random.choice(options)
-        if type(mon_choix) is int:
-            mon_choix = [mon_choix]
-
         continuer = random.choice(self.stop_encore)
 
         neutres_echelle = [echelle for echelle, _ in neutres
@@ -127,7 +121,7 @@ class Bot:
         :param neutres: l'emplacement des pions neutres
         :return: la hauteur de mes pions sur les échelles
         """
-        mes_echelles = joueurs[self.mon_numero].position
+        mes_echelles = joueurs[self.mon_numero]
         # si un neutre est présent on remet la bonne hauteur
         for echelle, hauteur in neutres:
             if echelle != 0:

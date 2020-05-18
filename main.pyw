@@ -1,3 +1,4 @@
+import copy
 import sys
 import time
 
@@ -200,6 +201,8 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
         self.desactiver_bouton()
         # On lance les dés
         possibilite = u.lancer_de(self.DeA, self.DeB, self.DeC, self.DeD)
+        print(f"======= Lancé dés : {possibilite} =======")
+
         # retrouver les infos du plateau
         neutres_restants, possible_neutres, possible_autres = self.partie.trouver_position_jouable()
 
@@ -243,11 +246,11 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
                 if pos[0]:
                     print(f" {choix} ==> Bouton 1")
                     bouton[1].setEnabled(True)
-                    self.liste_choix.append(choix[0])
+                    self.liste_choix.append([choix[0]])
                 if pos[1]:
                     print(f" {choix} ==> Bouton 2")
                     bouton[2].setEnabled(True)
-                    self.liste_choix.append(choix[1])
+                    self.liste_choix.append([choix[1]])
         self.repaint()
 
         if bot and self.partie.j_actuel == 2 and blocage != 3:
@@ -258,12 +261,16 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
     def bot_joue(self):
         """Faire jouer un bot"""
         self.desactiver_bouton()
-        jeu.repaint()
-        time.sleep(0.2)
-        bot_choix, bot_continue = ordi[0].jouer(self.partie.joueur, self.liste_choix, self.partie.liste_neutre)
+        self.repaint()
+        time.sleep(0.1)
+        # test = dict(self.partie.joueur)
+        pos_plateau = copy.deepcopy(self.partie.position_plateau)
+        l_choix = copy.deepcopy(self.liste_choix)
+        l_neutre = copy.deepcopy(self.partie.liste_neutre)
+        bot_choix, bot_continue = ordi[0].jouer(pos_plateau, l_choix, l_neutre)
         self.activer_choix(bot_choix)
-        jeu.repaint()
-        time.sleep(0.8)
+        self.repaint()
+        time.sleep(0.5)
         if bot_continue:
             self.continuer()
         else:
@@ -286,12 +293,8 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
     def activer_choix(self, choix: list):
         """Un joueur a fait un choix de déplacement, le prendre en compte"""
         # le choix actuel
-        if len(choix) == 2:
-            self.choix = [choix[0], choix[1]]
-        else:
-            self.choix = choix
+        self.choix = choix
         # Afficher les noirs
-        print(f"Nouveau choix: {self.choix}")
         lst_neutre = self.partie.liste_neutre.copy()
         self.replacer_neutre()
         for echelle in self.choix:
@@ -366,6 +369,8 @@ class Partie:
         # Affecter la position du joueur
         self.etat_joueur_actuel = self.joueur[self.j_actuel].position.copy()
 
+        print(f"============ Tour du joueur {self.j_actuel} ({self.couleur_actuelle}) ============")
+
         return self.j_actuel
 
     @property
@@ -385,6 +390,12 @@ class Partie:
         """
         neutres = list(filter(lambda l: l[0] != 0, self.liste_neutre))
         return neutres
+
+    @property
+    def position_plateau(self):
+        """Retourne l'état du plateau des joueurs"""
+        pos_plateau = {i: j.position for i, j in self.joueur.items()}
+        return pos_plateau
 
     def trouver_position_jouable(self) -> (int, list, list):
         """
@@ -458,7 +469,6 @@ class Partie:
             # Le pion est arrivé au bout ?
             if u.ECHELLE[echelle] == niveau:
                 self.echelle_clos.append(echelle)
-                print(self.echelle_clos)
                 self.joueur[self.j_actuel].termine += 1
                 jeu.tableau_echelles[echelle].setVisible(True)
                 # Supprimer les pions qui étaient dans l'échelle
