@@ -885,15 +885,6 @@
     <property name="title">
      <string>Partie</string>
     </property>
-    <widget class="QMenu" name="menuNouvelle_partie">
-     <property name="title">
-      <string>Nouvelle partie</string>
-     </property>
-     <addaction name="separator"/>
-     <addaction name="action2_joueurs"/>
-     <addaction name="action3_joueurs"/>
-     <addaction name="action4_joueurs"/>
-    </widget>
     <widget class="QMenu" name="menuApparence">
      <property name="title">
       <string>Apparence</string>
@@ -902,7 +893,7 @@
      <addaction name="actionAppCouleur"/>
      <addaction name="actionAppBois"/>
     </widget>
-    <addaction name="menuNouvelle_partie"/>
+    <addaction name="actionNouvellePartie"/>
     <addaction name="menuApparence"/>
     <addaction name="separator"/>
     <addaction name="actionQuitter"/>
@@ -945,30 +936,6 @@
     <string>A propos...</string>
    </property>
   </action>
-  <action name="action2_joueurs">
-   <property name="text">
-    <string>2 joueurs</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+2</string>
-   </property>
-  </action>
-  <action name="action3_joueurs">
-   <property name="text">
-    <string>3 joueurs</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+3</string>
-   </property>
-  </action>
-  <action name="action4_joueurs">
-   <property name="text">
-    <string>4 joueurs</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+4</string>
-   </property>
-  </action>
   <action name="actionAppSoft">
    <property name="checkable">
     <bool>true</bool>
@@ -1000,6 +967,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+9</string>
+   </property>
+  </action>
+  <action name="actionNouvellePartie">
+   <property name="text">
+    <string>Nouvelle partie</string>
    </property>
   </action>
  </widget>

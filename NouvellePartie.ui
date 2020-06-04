@@ -1,0 +1,538 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>NouvellePartie</class>
+ <widget class="QDialog" name="NouvellePartie">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>412</width>
+    <height>287</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Nouvelle partie</string>
+  </property>
+  <property name="modal">
+   <bool>true</bool>
+  </property>
+  <widget class="QDialogButtonBox" name="buttonBox">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>240</y>
+     <width>341</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <property name="standardButtons">
+    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+   </property>
+   <property name="centerButtons">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="NbJoueurs">
+   <property name="geometry">
+    <rect>
+     <x>160</x>
+     <y>20</y>
+     <width>69</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="currentText">
+    <string>2</string>
+   </property>
+   <item>
+    <property name="text">
+     <string>2</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>3</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>4</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>20</y>
+     <width>101</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Nombre de joueurs</string>
+   </property>
+  </widget>
+  <widget class="QRadioButton" name="_1_Humain">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>70</y>
+     <width>61</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Humain</string>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">_1_buttonGroup</string>
+   </attribute>
+  </widget>
+  <widget class="QRadioButton" name="_1_Bot">
+   <property name="geometry">
+    <rect>
+     <x>170</x>
+     <y>70</y>
+     <width>61</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Bot</string>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">_1_buttonGroup</string>
+   </attribute>
+  </widget>
+  <widget class="QSlider" name="_1_Risque">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>70</y>
+     <width>160</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="sliderPosition">
+    <number>50</number>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <property name="invertedAppearance">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="_1_Couleur">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>70</y>
+     <width>69</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <item>
+    <property name="text">
+     <string>Blanc</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Orange</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Jaune</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Rouge</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Bleu</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Violet</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Gris</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Vert</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QSlider" name="_2_Risque">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>110</y>
+     <width>160</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="sliderPosition">
+    <number>50</number>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <property name="invertedAppearance">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QRadioButton" name="_1_Bot_2">
+   <property name="geometry">
+    <rect>
+     <x>170</x>
+     <y>110</y>
+     <width>61</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Bot</string>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">_2_buttonGroup</string>
+   </attribute>
+  </widget>
+  <widget class="QRadioButton" name="_2_Humain">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>110</y>
+     <width>61</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Humain</string>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">_2_buttonGroup</string>
+   </attribute>
+  </widget>
+  <widget class="QComboBox" name="_2_Couleur">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>110</y>
+     <width>69</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <item>
+    <property name="text">
+     <string>Blanc</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Orange</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Jaune</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Rouge</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Bleu</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Violet</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Gris</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Vert</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QSlider" name="_3_Risque">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>150</y>
+     <width>160</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="sliderPosition">
+    <number>50</number>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <property name="invertedAppearance">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QRadioButton" name="_1_Bot_3">
+   <property name="geometry">
+    <rect>
+     <x>170</x>
+     <y>150</y>
+     <width>61</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Bot</string>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">_3_buttonGroup</string>
+   </attribute>
+  </widget>
+  <widget class="QComboBox" name="_3_Couleur">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>150</y>
+     <width>69</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <item>
+    <property name="text">
+     <string>Blanc</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Orange</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Jaune</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Rouge</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Bleu</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Violet</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Gris</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Vert</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QRadioButton" name="_3_Humain">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>150</y>
+     <width>61</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Humain</string>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">_3_buttonGroup</string>
+   </attribute>
+  </widget>
+  <widget class="QRadioButton" name="_4_Humain">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>190</y>
+     <width>61</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Humain</string>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">_4_buttonGroup</string>
+   </attribute>
+  </widget>
+  <widget class="QComboBox" name="_4_Couleur">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>190</y>
+     <width>69</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <item>
+    <property name="text">
+     <string>Blanc</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Orange</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Jaune</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Rouge</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Bleu</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Violet</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Gris</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Vert</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QRadioButton" name="_1_Bot_4">
+   <property name="geometry">
+    <rect>
+     <x>170</x>
+     <y>190</y>
+     <width>61</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Bot</string>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">_4_buttonGroup</string>
+   </attribute>
+  </widget>
+  <widget class="QSlider" name="_4_Risque">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>190</y>
+     <width>160</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="sliderPosition">
+    <number>50</number>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <property name="invertedAppearance">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>270</x>
+     <y>30</y>
+     <width>91</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Prise de risque</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>NouvellePartie</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>NouvellePartie</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <buttongroups>
+  <buttongroup name="_1_buttonGroup"/>
+  <buttongroup name="_2_buttonGroup"/>
+  <buttongroup name="_3_buttonGroup"/>
+  <buttongroup name="_4_buttonGroup"/>
+ </buttongroups>
+</ui>

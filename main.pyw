@@ -9,6 +9,7 @@ from PyQt5.QtCore import Qt
 import css_ui as ui
 import A_Propos_ui
 import Regle_ui
+import NouvellePartie_ui
 import joueur
 import util as u
 
@@ -25,6 +26,12 @@ class APropos(QDialog, A_Propos_ui.Ui_Propos):
         self.setupUi(self)
 
 
+class NouvellePartie(QDialog, NouvellePartie_ui.Ui_NouvellePartie):
+    def __init__(self):
+        QDialog.__init__(self, flags=Qt.WindowFlags())
+        self.setupUi(self)
+
+
 class Jeu(QMainWindow, ui.Ui_MainWindow):
     """Classe pour gérer le plateau de jeu et les actions des joueurs"""
     def __init__(self):
@@ -36,11 +43,12 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
 
         # Action des menus
         self.actionQuitter.triggered.connect(self.close)
-        self.action2_joueurs.triggered.connect(lambda: self.nouvelle_partie(2))
-        self.action3_joueurs.triggered.connect(lambda: self.nouvelle_partie(3))
-        self.action4_joueurs.triggered.connect(lambda: self.nouvelle_partie(4))
+        # self.action2_joueurs.triggered.connect(lambda: self.nouvelle_partie(2))
+        # self.action3_joueurs.triggered.connect(lambda: self.nouvelle_partie(3))
+        # self.action4_joueurs.triggered.connect(lambda: self.nouvelle_partie(4))
         self.actionRegles.triggered.connect(self.afficher_regle)
         self.actionA_propos.triggered.connect(self.afficher_propos)
+        self.actionNouvellePartie.triggered.connect(self.afficher_nouvelle_partie)
 
         # Apparence
         self.actionAppSoft.setChecked(True)
@@ -105,6 +113,12 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
         """Afficher la fenêtre de l'à propos"""
         dialog_propos = APropos()
         dialog_propos.exec_()
+
+    @staticmethod
+    def afficher_nouvelle_partie():
+        """Afficher la fenêtre de l'à propos"""
+        dialog_nouvelle_partie = NouvellePartie()
+        dialog_nouvelle_partie.exec_()
 
     def f_activer_choix(self, val1: int, val2: int):
         """
