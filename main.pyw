@@ -31,6 +31,79 @@ class NouvellePartie(QDialog, NouvellePartie_ui.Ui_NouvellePartie):
         QDialog.__init__(self, flags=Qt.WindowFlags())
         self.setupUi(self)
 
+        # Masquer les éléments qui ne sont pas pour 2 joueurs
+        self.nb_joueur = 2
+
+        # trouver les couleurs aléatoirement
+        self.j_couleur = u.creer_joueurs(4)
+
+        # humain par defaut
+        self.j_humain = {1: True, 2: True, 3: True, 4: True}
+
+        # risque a 50% par defaut
+        self.j_risque = {1: 50, 2: 50, 3: 50, 4: 50}
+
+        # affecter les valeurs à l'interface
+        self.changement_nombre(2)
+        self._1_Couleur.setCurrentText(self.j_couleur[1])
+        self._2_Couleur.setCurrentText(self.j_couleur[2])
+        self._3_Couleur.setCurrentText(self.j_couleur[3])
+        self._4_Couleur.setCurrentText(self.j_couleur[4])
+        if self.j_humain[1]:
+            self._1_Humain.setChecked(True)
+        else:
+            self._1_Bot.setChecked(True)
+        if self.j_humain[2]:
+            self._2_Humain.setChecked(True)
+        else:
+            self._2_Bot.setChecked(True)
+        if self.j_humain[3]:
+            self._3_Humain.setChecked(True)
+        else:
+            self._3_Bot.setChecked(True)
+        if self.j_humain[4]:
+            self._4_Humain.setChecked(True)
+        else:
+            self._4_Bot.setChecked(True)
+
+        # connect
+        self.NbJoueurs.currentTextChanged.connect(lambda: self.changement_nombre(self.NbJoueurs.currentText()))
+
+    def changement_nombre(self, nb: int):
+        self.nb_joueur = nb
+        print(f"Nombre de joueurs --> {self.nb_joueur}")
+        # masquer les joueurs inutiles
+        if nb == 4:
+            self._4_Couleur.setVisible(True)
+            self._4_Humain.setVisible(True)
+            self._4_Bot.setVisible(True)
+            self._4_Risque.setVisible(True)
+            self._3_Couleur.setVisible(True)
+            self._3_Humain.setVisible(True)
+            self._3_Bot.setVisible(True)
+            self._3_Risque.setVisible(True)
+        if nb == 3:
+            print("desactiver pour 3")
+            self._4_Couleur.setVisible(False)
+            self._4_Humain.setVisible(False)
+            self._4_Bot.setVisible(False)
+            self._4_Risque.setVisible(False)
+            self._3_Couleur.setVisible(True)
+            self._3_Humain.setVisible(True)
+            self._3_Bot.setVisible(True)
+            self._3_Risque.setVisible(True)
+        # if nb == 2:
+        #     self._4_Couleur.setVisible(False)
+        #     self._4_Humain.setVisible(False)
+        #     self._4_Bot.setVisible(False)
+        #     self._4_Risque.setVisible(False)
+        #     self._3_Couleur.setVisible(False)
+        #     self._3_Humain.setVisible(False)
+        #     self._3_Bot.setVisible(False)
+        #     self._3_Risque.setVisible(False)
+        print("redessiner")
+        self.repaint()
+
 
 class Jeu(QMainWindow, ui.Ui_MainWindow):
     """Classe pour gérer le plateau de jeu et les actions des joueurs"""
@@ -118,7 +191,11 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
     def afficher_nouvelle_partie():
         """Afficher la fenêtre de l'à propos"""
         dialog_nouvelle_partie = NouvellePartie()
-        dialog_nouvelle_partie.exec_()
+        sortie = dialog_nouvelle_partie.exec_()
+        # on prend en compte si c'est validé
+        if sortie:
+            print(f"nombre d joueurs : {dialog_nouvelle_partie.nb_joueur}")
+            jeu.nouvelle_partie(int(dialog_nouvelle_partie.nb_joueur))
 
     def f_activer_choix(self, val1: int, val2: int):
         """

@@ -196,7 +196,7 @@
     <bool>false</bool>
    </property>
   </widget>
-  <widget class="QRadioButton" name="_1_Bot_2">
+  <widget class="QRadioButton" name="_2_Bot">
    <property name="geometry">
     <rect>
      <x>170</x>
@@ -297,7 +297,7 @@
     <bool>false</bool>
    </property>
   </widget>
-  <widget class="QRadioButton" name="_1_Bot_3">
+  <widget class="QRadioButton" name="_3_Bot">
    <property name="geometry">
     <rect>
      <x>170</x>
@@ -445,7 +445,7 @@
     </property>
    </item>
   </widget>
-  <widget class="QRadioButton" name="_1_Bot_4">
+  <widget class="QRadioButton" name="_4_Bot">
    <property name="geometry">
     <rect>
      <x>170</x>
@@ -530,9 +530,9 @@
   </connection>
  </connections>
  <buttongroups>
-  <buttongroup name="_1_buttonGroup"/>
   <buttongroup name="_2_buttonGroup"/>
-  <buttongroup name="_3_buttonGroup"/>
   <buttongroup name="_4_buttonGroup"/>
+  <buttongroup name="_3_buttonGroup"/>
+  <buttongroup name="_1_buttonGroup"/>
  </buttongroups>
 </ui>
