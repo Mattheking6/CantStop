@@ -68,7 +68,7 @@ class Bot:
     """Classe generique de Bot"""
 
     def __init__(self, mon_numero: int, aggressivite: int):
-        print("Ajout d'un bot")
+        print(f"Ajout d'un bot en joueur {mon_numero} d'agressivité {aggressivite}")
         self.aggressivite = aggressivite
         self.mon_numero = mon_numero
         encore = [True for _ in range(self.aggressivite)]

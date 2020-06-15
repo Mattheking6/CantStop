@@ -45,10 +45,8 @@ class NouvellePartie(QDialog, NouvellePartie_ui.Ui_NouvellePartie):
 
         # affecter les valeurs à l'interface
         self.changement_nombre(2)
-        self._1_Couleur.setCurrentText(self.j_couleur[1])
-        self._2_Couleur.setCurrentText(self.j_couleur[2])
-        self._3_Couleur.setCurrentText(self.j_couleur[3])
-        self._4_Couleur.setCurrentText(self.j_couleur[4])
+        self.affecter_couleur()
+
         if self.j_humain[1]:
             self._1_Humain.setChecked(True)
         else:
@@ -68,8 +66,24 @@ class NouvellePartie(QDialog, NouvellePartie_ui.Ui_NouvellePartie):
 
         # connect
         self.NbJoueurs.currentTextChanged.connect(lambda: self.changement_nombre(self.NbJoueurs.currentText()))
+        self._1_Couleur.currentTextChanged.connect(lambda: self.changement_couleur(1, self._1_Couleur.currentText()))
+        self._2_Couleur.currentTextChanged.connect(lambda: self.changement_couleur(2, self._2_Couleur.currentText()))
+        self._3_Couleur.currentTextChanged.connect(lambda: self.changement_couleur(3, self._3_Couleur.currentText()))
+        self._4_Couleur.currentTextChanged.connect(lambda: self.changement_couleur(4, self._4_Couleur.currentText()))
+        self._1_Humain.toggled.connect(lambda: self.changement_humain(1, self._1_Humain.isChecked()))
+        self._2_Humain.toggled.connect(lambda: self.changement_humain(2, self._2_Humain.isChecked()))
+        self._3_Humain.toggled.connect(lambda: self.changement_humain(3, self._3_Humain.isChecked()))
+        self._4_Humain.toggled.connect(lambda: self.changement_humain(4, self._4_Humain.isChecked()))
+        self._1_Risque.valueChanged.connect(lambda: self.changement_risque(1, self._1_Risque.value()))
+        self._2_Risque.valueChanged.connect(lambda: self.changement_risque(2, self._2_Risque.value()))
+        self._3_Risque.valueChanged.connect(lambda: self.changement_risque(3, self._3_Risque.value()))
+        self._4_Risque.valueChanged.connect(lambda: self.changement_risque(4, self._4_Risque.value()))
 
     def changement_nombre(self, nb: int):
+        """
+        Modification du nombre de joueurs
+        :param nb: nb de joueurs
+        """
         self.nb_joueur = nb
         print(f"Nombre de joueurs --> {self.nb_joueur}")
         # masquer les joueurs inutiles
@@ -104,9 +118,61 @@ class NouvellePartie(QDialog, NouvellePartie_ui.Ui_NouvellePartie):
         print("redessiner")
         self.repaint()
 
+    def affecter_couleur(self):
+        """
+        Mettre à jour l'interface avec les couleurs des joueurs
+        """
+        self._1_Couleur.setCurrentText(self.j_couleur[1])
+        self._2_Couleur.setCurrentText(self.j_couleur[2])
+        self._3_Couleur.setCurrentText(self.j_couleur[3])
+        self._4_Couleur.setCurrentText(self.j_couleur[4])
+
+    def changement_couleur(self, j: int, couleur: str):
+        """
+        Changer la couleur d'un joueur
+        :param j: le joueur à faire évoluer
+        :param couleur: la couleur à lui affecter
+        """
+        test = 0
+        print(f"Changer la couleur de {j} : {self.j_couleur[j]} en {couleur} ")
+        # Verifier que la couleur est deja bonne pour ne pas boucler
+        if self.j_couleur[j] != couleur:
+            # Verifier que la couleur n'est pas déjà utilisée
+            for to_test in range(1, 5):
+                if self.j_couleur[to_test] == couleur:
+                    test += to_test
+
+            # Si on trouve une valeur on lui donne la couleur qu'on vient de changer
+            if test != 0:
+                self.j_couleur[test] = self.j_couleur[j]
+
+            # On applique la couleur au choix
+            self.j_couleur[j] = couleur
+
+            # On actualise les nouvelles couleurs
+            self.affecter_couleur()
+
+    def changement_humain(self, j: int, humain: bool):
+        """
+        Changer le type de joueur
+        :param j: le joueur à faire évoluer
+        :param humain: Humain => True sinon False (Bot)
+        """
+        print(f"Changer le joueur {j} en humain : {humain}")
+        self.j_humain[j] = humain
+
+    def changement_risque(self, j: int, risque: int):
+        """
+        Changer le risque du joueur
+        :param j: le joueur à faire évoluer
+        :param risque: 0 pas de risque, 99 full risque
+        """
+        self.j_risque[j] = risque
+
 
 class Jeu(QMainWindow, ui.Ui_MainWindow):
     """Classe pour gérer le plateau de jeu et les actions des joueurs"""
+
     def __init__(self):
         QMainWindow.__init__(self, flags=Qt.WindowFlags())
         self.setupUi(self)
@@ -194,8 +260,11 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
         sortie = dialog_nouvelle_partie.exec_()
         # on prend en compte si c'est validé
         if sortie:
-            print(f"nombre d joueurs : {dialog_nouvelle_partie.nb_joueur}")
-            jeu.nouvelle_partie(int(dialog_nouvelle_partie.nb_joueur))
+            print(f"nombre de joueurs : {dialog_nouvelle_partie.nb_joueur}")
+            prepa_table = {choix: [dialog_nouvelle_partie.j_couleur[choix],
+                                   dialog_nouvelle_partie.j_humain[choix],
+                                   dialog_nouvelle_partie.j_risque[choix]] for choix in range(1, 5)}
+            jeu.nouvelle_partie(int(dialog_nouvelle_partie.nb_joueur), prepa_table)
 
     def f_activer_choix(self, val1: int, val2: int):
         """
@@ -232,7 +301,7 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
         systray.show()
         close.triggered.connect(qApp.quit)
 
-    def nouvelle_partie(self, nb_joueurs: int):
+    def nouvelle_partie(self, nb_joueurs: int, param: dict):
         """Remet le jeu en place pour une nouvelle partie"""
         # repositionner les pions
         pions.nouvelle_partie()
@@ -240,10 +309,14 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
         self.Gagne.setVisible(False)
         self.desactiver_echelles()
         # On lance un nouveau jeu
-        self.partie = Partie(nb_joueurs)
+        self.partie = Partie(nb_joueurs, param)
         # si on joue contre l'ordinateur
-        if bot:
-            ordi.append(joueur.Bot(2, aggressivite))
+        for cle, valeur in param.items():
+            # si c'est un bot
+            if not valeur[1]:
+                ordi[cle] = joueur.Bot(cle, valeur[2])
+        # if bot:
+        #     ordi.append(joueur.Bot(2, aggressivite))
         self.Choix_1_0.setVisible(True)
         self.Choix_2_0.setVisible(True)
         self.Choix_3_0.setVisible(True)
@@ -344,7 +417,7 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
                     self.liste_choix.append([choix[1]])
         self.repaint()
 
-        if bot and self.partie.j_actuel == 2 and blocage != 3:
+        if self.partie.j_actuel in ordi and blocage != 3:
             self.bot_joue()
 
         return False if blocage == 3 else True
@@ -358,7 +431,7 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
         pos_plateau = copy.deepcopy(self.partie.position_plateau)
         l_choix = copy.deepcopy(self.liste_choix)
         l_neutre = copy.deepcopy(self.partie.liste_neutre)
-        bot_choix, bot_continue = ordi[0].jouer(pos_plateau, l_choix, l_neutre)
+        bot_choix, bot_continue = ordi[self.partie.j_actuel].jouer(pos_plateau, l_choix, l_neutre)
         self.activer_choix(bot_choix)
         self.repaint()
         time.sleep(0.5)
@@ -431,10 +504,11 @@ class Partie:
     """
     Classe pour gérer la partie en cours
     """
-    def __init__(self, nombre_joueurs: int):
+
+    def __init__(self, nombre_joueurs: int, param: dict):
         print(f"==> Nouvelle partie de {nombre_joueurs} joueurs")
         self._nombre_joueurs = nombre_joueurs
-        self.couleurs_joueurs = u.creer_joueurs(nombre_joueurs)
+        self.couleurs_joueurs = {_: param[_][0] for _ in range(1, nombre_joueurs + 1)}
         self.j_actuel = 0
         self.liste_neutre = [(0, 0), (0, 0), (0, 0)]
         self.echelle_clos = []
@@ -591,6 +665,7 @@ class Joueur:
 
 class Pions:
     """Classe pour gérer les pions sur le plateau"""
+
     def __init__(self):
         # creer un pion par joueur et par colonne
         self.liste_pions = {(num_joueur, num_colonne): u.pion_initier(jeu.centralwidget, num_joueur, num_colonne)
@@ -617,7 +692,7 @@ if __name__ == '__main__':
         pions = Pions()
         bot = True
         aggressivite = 85
-        ordi = []
+        ordi = {}
 
         splash_image = u.image_de(1)
         splash = QSplashScreen()
