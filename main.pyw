@@ -27,25 +27,48 @@ class APropos(QDialog, A_Propos_ui.Ui_Propos):
 
 
 class NouvellePartie(QDialog, NouvellePartie_ui.Ui_NouvellePartie):
-    def __init__(self):
+    def __init__(self, ):
         QDialog.__init__(self, flags=Qt.WindowFlags())
         self.setupUi(self)
 
-        # Masquer les éléments qui ne sont pas pour 2 joueurs
-        self.nb_joueur = 2
+        # couleur les joueurs
+        self.j_couleur = {}
+        self.j_humain = {}
+        self.j_risque = {}
 
-        # trouver les couleurs aléatoirement
-        self.j_couleur = u.creer_joueurs(4)
+        # On regarde si on partie est en cours
+        if jeu.partie is None:
+            print("C'est la première partie.")
 
-        # humain par defaut
-        self.j_humain = {1: True, 2: True, 3: True, 4: True}
+            # Masquer les éléments qui ne sont pas pour 2 joueurs
+            self.nb_joueur = 2
 
-        # risque a 50% par defaut
-        self.j_risque = {1: 50, 2: 50, 3: 50, 4: 50}
+            # trouver les couleurs aléatoirement
+            self.j_couleur = u.creer_joueurs(4)
+
+            # humain par defaut
+            self.j_humain = {1: True, 2: True, 3: True, 4: True}
+
+            # risque a 50% par defaut
+            self.j_risque = {1: 50, 2: 50, 3: 50, 4: 50}
+
+        else:
+            print("Récupération des paramètres de la partie précédente.")
+
+            # trouver le nb de joueurs précédent
+            self.nb_joueur = jeu.partie.nombre_joueurs
+
+            # trouver les caractéristiques précédentes
+            for j, params in jeu.prepa_table.items():
+                print({str(params)})
+                self.j_couleur[j] = params[0]
+                self.j_humain[j] = params[1]
+                self.j_risque[j] = params[2]
 
         # affecter les valeurs à l'interface
-        self.changement_nombre(2)
+        self.changement_nombre(self.nb_joueur)
         self.affecter_couleur()
+        self.affecter_risque()
 
         if self.j_humain[1]:
             self._1_Humain.setChecked(True)
@@ -126,6 +149,15 @@ class NouvellePartie(QDialog, NouvellePartie_ui.Ui_NouvellePartie):
         self._2_Couleur.setCurrentText(self.j_couleur[2])
         self._3_Couleur.setCurrentText(self.j_couleur[3])
         self._4_Couleur.setCurrentText(self.j_couleur[4])
+
+    def affecter_risque(self):
+        """
+        Mettre à jour l'interface avec les risques des joueurs
+        """
+        self._1_Risque.setValue(self.j_risque[1])
+        self._2_Risque.setValue(self.j_risque[2])
+        self._3_Risque.setValue(self.j_risque[3])
+        self._4_Risque.setValue(self.j_risque[4])
 
     def changement_couleur(self, j: int, couleur: str):
         """
@@ -219,6 +251,7 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
         self.partie = None
 
         # necessaire pour manager le jeu
+        self.prepa_table = {}
         self.choix = []
         self.liste_choix = []
 
@@ -253,18 +286,17 @@ class Jeu(QMainWindow, ui.Ui_MainWindow):
         dialog_propos = APropos()
         dialog_propos.exec_()
 
-    @staticmethod
-    def afficher_nouvelle_partie():
+    def afficher_nouvelle_partie(self):
         """Afficher la fenêtre de l'à propos"""
         dialog_nouvelle_partie = NouvellePartie()
         sortie = dialog_nouvelle_partie.exec_()
         # on prend en compte si c'est validé
         if sortie:
             print(f"nombre de joueurs : {dialog_nouvelle_partie.nb_joueur}")
-            prepa_table = {choix: [dialog_nouvelle_partie.j_couleur[choix],
-                                   dialog_nouvelle_partie.j_humain[choix],
-                                   dialog_nouvelle_partie.j_risque[choix]] for choix in range(1, 5)}
-            jeu.nouvelle_partie(int(dialog_nouvelle_partie.nb_joueur), prepa_table)
+            self.prepa_table = {_: [dialog_nouvelle_partie.j_couleur[_],
+                                    dialog_nouvelle_partie.j_humain[_],
+                                    dialog_nouvelle_partie.j_risque[_]] for _ in range(1, 5)}
+            jeu.nouvelle_partie(int(dialog_nouvelle_partie.nb_joueur), self.prepa_table)
 
     def f_activer_choix(self, val1: int, val2: int):
         """
@@ -507,7 +539,7 @@ class Partie:
 
     def __init__(self, nombre_joueurs: int, param: dict):
         print(f"==> Nouvelle partie de {nombre_joueurs} joueurs")
-        self._nombre_joueurs = nombre_joueurs
+        self.nombre_joueurs = nombre_joueurs
         self.couleurs_joueurs = {_: param[_][0] for _ in range(1, nombre_joueurs + 1)}
         self.j_actuel = 0
         self.liste_neutre = [(0, 0), (0, 0), (0, 0)]
@@ -515,6 +547,7 @@ class Partie:
         # Creer les joueurs
         self.joueur = {numero: Joueur(numero, self.couleurs_joueurs[numero]) for numero in range(1, nombre_joueurs + 1)}
         self.etat_joueur_actuel = {}
+        self.table = param
 
     def tour_suivant(self):
         """
@@ -522,7 +555,7 @@ class Partie:
         :return: le numéro du joueur actuel
         """
         # increment boucle
-        if self.j_actuel == self._nombre_joueurs:
+        if self.j_actuel == self.nombre_joueurs:
             self.j_actuel = 1
         else:
             self.j_actuel += 1
